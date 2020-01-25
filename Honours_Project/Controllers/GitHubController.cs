@@ -28,18 +28,25 @@ namespace Honours_Project.Controllers
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        /*[HttpGet]
+        [HttpGet]
         [Route("get/users/repositories/{userName}")]
         public async Task<Repo_List_Result> Get_User_Repositories(string userName)
         {
             return await _githubService.Get_User_Repositories(userName);
-        }*/
+        }
 
         [HttpGet]
-        [Route("get/users/repositories/{userName}")]
-        public async Task<string> Get_User_Repositories(string userName)
+        [Route("get/repository/stats/{userName}/{repoName}")]
+        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName)
         {
-            return await _githubService.Get_User_Repositories(userName);
+            return await _githubService.Get_Repository_Stats(userName, repoName);
+        }
+
+        [HttpGet]
+        [Route("get/repository/commits/{userName}/{repoName}/{pageNumber}")]
+        public async Task<Repo_Commit_Result> Get_Repository_Stats(string userName, string repoName, int pageNumber)
+        {
+            return await _githubService.Get_Repository_Commits(userName, repoName, pageNumber);
         }
     }
 }

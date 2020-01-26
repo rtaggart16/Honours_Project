@@ -11,6 +11,7 @@ namespace Honours_Project.Services
 
     public class StatisticsService : IStatisticsService
     {
+        private readonly decimal COMMIT_PERCENTAGE_FACTOR = 50M;
         private readonly decimal ADDITION_PERCENTAGE_FACTOR = 25M;
         private readonly decimal DELETION_PERCENTAGE_FACTOR = 25M;
 
@@ -21,6 +22,23 @@ namespace Honours_Project.Services
 
 
         //! SECTION: Sub-level Calculations
+
+        /// <summary>
+        /// Method to calculate an individual's commit score
+        /// </summary>
+        /// <param name="userCommits"></param>
+        /// <param name="repoCommits"></param>
+        /// <param name="authorTotal"></param>
+        /// <returns></returns>
+        public decimal Calculate_Commit_Score(int userCommits, int repoCommits, int authorTotal)
+        {
+            if (repoCommits == 0)
+            {
+                return (COMMIT_PERCENTAGE_FACTOR / (decimal)authorTotal);
+            }
+
+            return ((decimal)userCommits / (decimal)repoCommits) * COMMIT_PERCENTAGE_FACTOR;
+        }
 
         /// <summary>
         /// Method to calculate an individual's addition score

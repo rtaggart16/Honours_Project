@@ -11,7 +11,8 @@ namespace Honours_Project.Services
 
     public class StatisticsService : IStatisticsService
     {
-        private readonly decimal ADDITION_PERCENTAGE_FACTOR = 50M;
+        private readonly decimal ADDITION_PERCENTAGE_FACTOR = 25M;
+        private readonly decimal DELETION_PERCENTAGE_FACTOR = 25M;
 
         //! SECTION: Top-level Calculation
 
@@ -20,7 +21,7 @@ namespace Honours_Project.Services
 
 
         //! SECTION: Sub-level Calculations
-        
+
         /// <summary>
         /// Method to calculate an individual's addition score
         /// </summary>
@@ -37,6 +38,23 @@ namespace Honours_Project.Services
             }
 
             return ((decimal)userAdditions / (decimal)repoAdditions) * ADDITION_PERCENTAGE_FACTOR;
+        }
+
+        /// <summary>
+        /// Method to calculate an individual's deletion score
+        /// </summary>
+        /// <param name="userDeletions"></param>
+        /// <param name="repoDeletions"></param>
+        /// <param name="authorTotal"></param>
+        /// <returns></returns>
+        public decimal Calculate_Deletion_Score(int userDeletions, int repoDeletions, int authorTotal)
+        {
+            if (userDeletions == 0)
+            {
+                return (DELETION_PERCENTAGE_FACTOR / (decimal)authorTotal);
+            }
+
+            return ((decimal)userDeletions / (decimal)repoDeletions) * DELETION_PERCENTAGE_FACTOR;
         }
 
         //! END SECTION: Sub-level Calculations

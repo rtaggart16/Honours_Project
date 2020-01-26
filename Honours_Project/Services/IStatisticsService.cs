@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Honours_Project.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace Honours_Project.Services
 {
     public interface IStatisticsService
     {
+        Contribution_Result CalculateBasicCommitContributionScore(Contribution_Request request);
     }
 
     public class StatisticsService : IStatisticsService
@@ -17,6 +19,23 @@ namespace Honours_Project.Services
 
         //! SECTION: Top-level Calculation
 
+        public Contribution_Result CalculateBasicCommitContributionScore(Contribution_Request request)
+        {
+            // Initialise the values
+            Contribution_Result result = new Contribution_Result
+            {
+                Score = new Score_Component()
+                {
+                    Commit_Score = Calculate_Commit_Score(request.User.Commit_Total, request.Repo.Commit_Total, request.Author_Total),
+                    Addition_Score = Calculate_Addition_Score(request.User.Addition_Total, request.Repo.Addition_Total, request.Author_Total),
+                    Deletion_Score = Calculate_Deletion_Score(request.User.Deletion_Total, request.Repo.Deletion_Total, request.Author_Total)
+                }
+            };
+
+            result.Score.Contribution_Score = (result.Score.Commit_Score + result.Score.Addition_Score + result.Score.Deletion_Score);
+
+            return result;
+        }
 
         //! END SECTION: Top-level Calculations
 

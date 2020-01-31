@@ -12,7 +12,7 @@ namespace Honours_Project
     {
         Task<Repo_List_Result> Get_User_Repositories(string userName);
 
-        Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName);
+        Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end);
 
         Task<Repo_Commit_Result> Get_Repository_Commits(string userName, string repoName, int pageNumber);
     }
@@ -62,7 +62,7 @@ namespace Honours_Project
             }
         }
 
-        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName)
+        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end)
         {
             using (var client = new HttpClient())
             {
@@ -79,6 +79,58 @@ namespace Honours_Project
                     content = content.Replace(@"\", "");
 
                     List<Repo_Stat_Info> result = JsonConvert.DeserializeObject<List<Repo_Stat_Info>>(content);
+
+                    if(start.HasValue && end.HasValue)
+                    {     
+                        if(start.Value.Date <= end.Value.Date)
+                        {
+                            // If the start and the end is the same value, change the end to a week from the start
+                            if (start.Value.Date == end.Value.Date)
+                            {
+                                end = start.Value.AddDays(7);
+                            }
+
+                            DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+
+                            var fileteredWeeks = new List<Repo_Stat_Info>();
+
+                            foreach (var authorStat in result)
+                            {
+                                var authorWeeks = new List<Week>();
+
+                                var authorTotal = 0;
+
+                                foreach (var week in authorStat.Weeks)
+                                {
+                                    var unixW = double.Parse(week.W);
+
+                                    var dateVal = dt.AddSeconds(unixW);
+
+                                    if (dateVal >= start && dateVal < end)
+                                    {
+                                        authorWeeks.Add(week);
+
+                                        authorTotal += week.C;
+                                    }
+                                }
+
+                                authorStat.Weeks = authorWeeks;
+                                authorStat.Total = authorTotal;
+                            }
+                        }
+                        else
+                        {
+                            return new Repo_Stat_Result()
+                            {
+                                Stats = new List<Repo_Stat_Info>(),
+                                Status = new Status()
+                                {
+                                    Status_Code = 500,
+                                    Message = "Start can't be greater than end"
+                                }
+                            };
+                        }
+                    }
 
                     return new Repo_Stat_Result()
                     {

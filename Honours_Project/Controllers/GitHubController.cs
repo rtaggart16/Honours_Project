@@ -36,10 +36,10 @@ namespace Honours_Project.Controllers
         }
 
         [HttpGet]
-        [Route("get/repository/stats/{userName}/{repoName}")]
-        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName)
+        [Route("get/repository/stats/{userName}/{repoName}/{start}/{end}")]
+        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end)
         {
-            return await _githubService.Get_Repository_Stats(userName, repoName);
+            return await _githubService.Get_Repository_Stats(userName, repoName, start, end);
         }
 
         [HttpGet]

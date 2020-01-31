@@ -28,6 +28,10 @@ namespace Honours_Project.Models
         public Repo_Total User { get; set; }
 
         public int Author_Total { get; set; }
+
+        public DateTime? Start { get; set; }
+
+        public DateTime? End { get; set; }
     }
 
     public class Contribution_Result

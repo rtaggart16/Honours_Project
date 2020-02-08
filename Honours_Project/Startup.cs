@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Honours_Project.Models;
+using Honours_Project.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +34,10 @@ namespace Honours_Project
             });
 
             services.AddTransient<IGitHubService, GitHubService>();
+            services.AddTransient<IStatisticsService, StatisticsService>();
+            services.AddTransient<IRESTService, RESTService>();
+
+            services.Configure<API_Config>(Configuration.GetSection("API_Config"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

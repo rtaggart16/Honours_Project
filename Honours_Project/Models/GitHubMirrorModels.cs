@@ -250,14 +250,24 @@ namespace Honours_Project.Models
     public class Repo_Commit
     {
         /// <summary>
+        /// The unique identifier of the commit
+        /// </summary>
+        public string Sha { get; set; }
+
+        /// <summary>
         /// Top-level information about a commit
         /// </summary>
-        public Commit commit { get; set; }
+        public Commit Commit { get; set; }
 
         /// <summary>
         /// Information about the author of the repo the commit belongs to
         /// </summary>
-        public Author_Info author { get; set; }
+        public Author_Info Author { get; set; }
+
+        /// <summary>
+        /// The stats of the commit
+        /// </summary>
+        public Commit_Stats Stats { get; set; }
     }
 
     /// <summary>
@@ -268,12 +278,33 @@ namespace Honours_Project.Models
         /// <summary>
         /// Information about the collaborator who made the commit
         /// </summary>
-        public Commiter committer { get; set; }
+        public Commiter Committer { get; set; }
 
         /// <summary>
         /// The message given by the collaborator
         /// </summary>
-        public string message { get; set; }
+        public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// Class that contains the additions and deletions of a commit
+    /// </summary>
+    public class Commit_Stats
+    {
+        /// <summary>
+        /// The total changes made by the commit
+        /// </summary>
+        public int Total { get; set; }
+
+        /// <summary>
+        /// The additions made by the commit
+        /// </summary>
+        public int Additions { get; set; }
+
+        /// <summary>
+        /// The deletions made by the commit
+        /// </summary>
+        public int Deletions { get; set; }
     }
 
     /// <summary>
@@ -284,22 +315,22 @@ namespace Honours_Project.Models
         /// <summary>
         /// The username of the collaborator i.e. "rtaggart16"
         /// </summary>
-        public string name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// The email of the collaborator
         /// </summary>
-        public string email { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         /// The date the collaborator made the commit
         /// </summary>
-        public string date { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// The message the collaborator gave the commit
         /// </summary>
-        public string message { get; set; }
+        public string Message { get; set; }
     }
 
     //! END Section: Sub-level models

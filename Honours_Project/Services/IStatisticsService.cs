@@ -9,6 +9,12 @@ namespace Honours_Project.Services
     public interface IStatisticsService
     {
         Contribution_Result CalculateBasicCommitContributionScore(Contribution_Request request);
+
+        decimal Calculate_Addition_Score(int userAdditions, int repoAdditions, int authorTotal);
+
+        decimal Calculate_Deletion_Score(int userDeletions, int repoDeletions, int authorTotal);
+
+        decimal Calculate_Commit_Score(int userCommits, int repoCommits, int authorTotal);
     }
 
     public class StatisticsService : IStatisticsService

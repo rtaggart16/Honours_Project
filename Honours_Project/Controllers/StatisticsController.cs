@@ -24,5 +24,26 @@ namespace Honours_Project.Controllers
         {
             return _statisticsService.CalculateBasicCommitContributionScore(request);
         }
+
+        [HttpPost]
+        [Route("get/addition/score")]
+        public decimal Get_Addition_Score([FromBody] Contribution_Request request)
+        {
+            return _statisticsService.Calculate_Addition_Score(request.User.Addition_Total, request.Repo.Addition_Total, request.Author_Total);
+        }
+
+        [HttpPost]
+        [Route("get/deletion/score")]
+        public decimal Get_Deletion_Score([FromBody] Contribution_Request request)
+        {
+            return _statisticsService.Calculate_Deletion_Score(request.User.Deletion_Total, request.Repo.Deletion_Total, request.Author_Total);
+        }
+
+        [HttpPost]
+        [Route("get/commit/score")]
+        public decimal Get_Commit_Score([FromBody] Contribution_Request request)
+        {
+            return _statisticsService.Calculate_Commit_Score(request.User.Commit_Total, request.Repo.Commit_Total, request.Author_Total);
+        }
     }
 }

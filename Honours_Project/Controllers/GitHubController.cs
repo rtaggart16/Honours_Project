@@ -6,6 +6,7 @@ using GraphQL.Client;
 using GraphQL.Common.Request;
 using GraphQL.Types;
 using Honours_Project.Models;
+using Honours_Project.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -19,12 +20,15 @@ namespace Honours_Project.Controllers
     {
         private readonly IGitHubService _githubService;
 
+        private readonly IGraphQLService _graphQLService;
+
         /// <summary>
         /// Constructor of the controller that handles dependency injection of required services
         /// </summary>
-        public GitHubController(IGitHubService githubService)
+        public GitHubController(IGitHubService githubService, IGraphQLService graphQLService)
         {
             _githubService = githubService;
+            _graphQLService = graphQLService;
         }
 
         /// <summary>
@@ -62,34 +66,60 @@ namespace Honours_Project.Controllers
 
         [HttpGet]
         [Route("get/graphql/commits")]
-        public async Task<string> Get_GraphQL_Commits()
+        public async Task<List<Node>> Get_GraphQL_Commits()
         {
             var user = "rtaggart16";
             var repo = "tmpst";
             var branch = "master";
 
-            var commitData = new GraphQLRequest
+            bool allCommitsFetched = false;
+
+            var pass = 1;
+
+            List<Node> nodes = new List<Node>();
+
+            var after = "";
+
+            do
             {
-                Query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage } edges { node { messageHeadline oid message author { name email date } changedFiles additions deletions } } } } } } } }"                
-            };
+                var query = "";
 
-            var client = new GraphQLClient("https://api.github.com/graphql");
+                if(pass != 1)
+                {
+                    query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { name email date } changedFiles additions deletions } } } } } } } }";
+                }
+                else
+                {
+                    query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { name email date } changedFiles additions deletions } } } } } } } }";
+                }
 
-            client.DefaultRequestHeaders.Add("User-Agent", "request");
+                var response = await _graphQLService.Perform_GraphQL_Request(query, GitHub_Model_Types.GraphQL_Repository_Result);
 
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "9807762057a12f61863ba358612c70fb090f8253");
+                var parsedResponse = (GraphQLRepositoryResult)response;
 
-            var response = await client.PostAsync(commitData);
+                pass++;
 
-            var data = (object)response.Data;
+                if(parsedResponse.Errors.Count() == 0)
+                {
+                    nodes.AddRange(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.Edges.Select(x => x.Node));
 
-            var dataString = data.ToString();
+                    if(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.HasNextPage)
+                    {
+                        after = parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.EndCursor;
+                    }
+                    else
+                    {
+                        allCommitsFetched = true;
+                    }
+                }
+                else
+                {
+                    break;
+                }
 
-            GraphQLRepositoryInfo repoInfo = JsonConvert.DeserializeObject<GraphQLRepositoryInfo>(dataString);
+            } while (allCommitsFetched == false);
 
-            string content = await response.Data;
-
-            return content;
+            return nodes;
         }
     }
 }

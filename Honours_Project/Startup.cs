@@ -36,6 +36,7 @@ namespace Honours_Project
             services.AddTransient<IGitHubService, GitHubService>();
             services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<IRESTService, RESTService>();
+            services.AddTransient<IGraphQLService, GraphQLService>();
 
             services.Configure<API_Config>(Configuration.GetSection("API_Config"));
 

@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 
 namespace Honours_Project.Models
 {
+    public class GraphQLRepositoryResult
+    {
+        public GraphQLRepositoryInfo RepositoryInfo { get; set; }
+
+        public List<GraphQL.Common.Response.GraphQLError> Errors { get; set; }
+    }
+
     public class GraphQLRepositoryInfo
     {
         public GraphQLRepository Repository { get; set; }
@@ -37,6 +44,8 @@ namespace Honours_Project.Models
     public class Page_Info
     {
         public bool HasNextPage { get; set; }
+
+        public string EndCursor { get; set; }
     }
 
     public class Edge

@@ -38,6 +38,7 @@ namespace Honours_Project.Models
     {
         Repo_List_Result = 0,
         Repo_Stat_Result = 1,
-        Repo_Commit_Result = 2
+        Repo_Commit_Result = 2,
+        GraphQL_Repository_Result = 3
     }
 }

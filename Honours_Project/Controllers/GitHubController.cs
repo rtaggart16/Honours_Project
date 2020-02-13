@@ -45,7 +45,7 @@ namespace Honours_Project.Controllers
 
         [HttpGet]
         [Route("get/repo/bias/{userName}/{repoName}/{additionThreshold}/{deletionThreshold}")]
-        public Task<List<Repo_Commit>> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold)
+        public Task<Repo_Bias_Result> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold)
         {
             return _githubService.Get_Repo_Bias(userName, repoName, additionThreshold, deletionThreshold);
         }
@@ -86,11 +86,11 @@ namespace Honours_Project.Controllers
 
                 if(pass != 1)
                 {
-                    query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { name email date } changedFiles additions deletions } } } } } } } }";
+                    query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
                 }
                 else
                 {
-                    query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { name email date } changedFiles additions deletions } } } } } } } }";
+                    query = "query { repository(name: \"" + repo + "\", owner: \"" + user + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
                 }
 
                 var response = await _graphQLService.Perform_GraphQL_Request(query, GitHub_Model_Types.GraphQL_Repository_Result);

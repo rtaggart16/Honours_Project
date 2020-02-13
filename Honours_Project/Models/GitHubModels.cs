@@ -75,6 +75,15 @@ namespace Honours_Project.Models
         public Status Status { get; set; }
     }
 
+    public class Repo_Bias_Result
+    {
+        public List<Repo_Commit> GitHub_Commits { get; set; }
+
+        public List<Repo_Commit> Mass_Addition_Commits { get; set; }
+
+        public List<Repo_Commit> Mass_Deletion_Commits { get; set; }
+    }
+
     //! END Section: Top-level models
 
 
@@ -305,6 +314,8 @@ namespace Honours_Project.Models
         /// The deletions made by the commit
         /// </summary>
         public int Deletions { get; set; }
+
+        public int Changed_Files { get; set; }
     }
 
     /// <summary>

@@ -72,10 +72,19 @@ namespace Honours_Project.Models
 
     public class Author
     {
+        public Commit_Author_Info User { get; set; }
+
         public string Name { get; set; }
 
         public string Email { get; set; }
 
         public DateTime Date { get; set; }
+    }
+
+    public class Commit_Author_Info
+    {
+        public string Login { get; set; }
+
+        public string AvatarUrl { get; set; }
     }
 }

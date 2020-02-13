@@ -18,18 +18,20 @@ namespace Honours_Project
 
         Task<Repo_Commit_Result> Get_Repository_Commits(string userName, string repoName, int pageNumber);
 
-        Task<List<Repo_Commit>> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold);
+        Task<Repo_Bias_Result> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold);
     }
 
     public class GitHubService : IGitHubService
     {
         private readonly API_Config _config;
         private readonly IRESTService _restService;
+        private readonly IGraphQLService _graphQLService;
 
-        public GitHubService(IOptions<API_Config> config, IRESTService restService)
+        public GitHubService(IOptions<API_Config> config, IRESTService restService, IGraphQLService graphQLService)
         {
             _config = config.Value;
             _restService = restService;
+            _graphQLService = graphQLService;
         }
 
         public async Task<Repo_List_Result> Get_User_Repositories(string userName)
@@ -155,7 +157,7 @@ namespace Honours_Project
             }
         }
 
-        public async Task<List<Repo_Commit>> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold)
+        public async Task<Repo_Bias_Result> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold)
         {
             /*
              * Tasks:
@@ -169,71 +171,124 @@ namespace Honours_Project
 
             List<Repo_Commit> biasCommits = new List<Repo_Commit>();
 
+            Repo_Bias_Result biasResult = new Repo_Bias_Result()
+            {
+                GitHub_Commits = new List<Repo_Commit>(),
+                Mass_Addition_Commits = new List<Repo_Commit>(),
+                Mass_Deletion_Commits = new List<Repo_Commit>()
+            };
+
             // 1. Get all commits for repo
 
-            bool commitsFetched = false;
+            bool allCommitsFetched = false;
 
-            for (int i = 1; commitsFetched == false; i++)
+            var pass = 1;
+
+            List<Node> nodes = new List<Node>();
+
+            var after = "";
+
+            var branch = "master";
+
+            do
             {
-                var pageCommits = await Get_Repository_Commits(userName, repoName, i);
+                var query = "";
 
-                if (pageCommits.Commits.Count() > 0)
+                if (pass != 1)
                 {
-                    allCommits.AddRange(pageCommits.Commits);
+                    query = "query { repository(name: \"" + repoName + "\", owner: \"" + userName + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
                 }
                 else
                 {
-                    commitsFetched = true;
+                    query = "query { repository(name: \"" + repoName + "\", owner: \"" + userName + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
                 }
+
+                var response = await _graphQLService.Perform_GraphQL_Request(query, GitHub_Model_Types.GraphQL_Repository_Result);
+
+                var parsedResponse = (GraphQLRepositoryResult)response;
+
+                pass++;
+
+                if (parsedResponse.Errors.Count() == 0)
+                {
+                    nodes.AddRange(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.Edges.Select(x => x.Node));
+
+                    if (parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.HasNextPage)
+                    {
+                        after = parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.EndCursor;
+                    }
+                    else
+                    {
+                        allCommitsFetched = true;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+
+            } while (allCommitsFetched == false);
+
+            foreach(var node in nodes)
+            {
+                allCommits.Add(new Repo_Commit()
+                {
+                    Sha = node.Oid,
+                    Author = new Author_Info()
+                    {
+                        Login = node.Author.User.Login,
+                        Avatar_Url = node.Author.User.AvatarUrl
+                    },
+                    Commit = new Commit()
+                    {
+                        Message = node.Message,
+                        Committer = new Commiter()
+                        {
+                            Date = node.Author.Date,
+                            Email = node.Author.Email,
+                            Message = node.Message,
+                            Name = node.Author.Name
+                        }
+                    },
+                    Stats = new Commit_Stats()
+                    {
+                        Additions = node.Additions,
+                        Deletions = node.Deletions,
+                        Total = (node.Additions + node.Deletions),
+                        Changed_Files = node.ChangedFiles
+                    }
+                });
             }
 
             if (allCommits.Count() > 0)
             {
-                allCommits.OrderBy(x => x.Commit.Committer.Date);
+                allCommits = allCommits.OrderBy(x => x.Commit.Committer.Date).ToList();
 
                 // Check first 5 commits for initial bias
 
-                for (int i = 0; i <= 4; i++)
+                foreach (var analysedCommit in allCommits)
                 {
-                    using (var client = new HttpClient())
+                    // GitHub Commit
+                    if(analysedCommit.Commit.Message.ToLower().Contains("git"))
                     {
-                        var url = "https://api.github.com/repos/" + userName + "/" + repoName + "/commits/" + allCommits[i].Sha;
+                        biasResult.GitHub_Commits.Add(analysedCommit);
+                    }
 
-                        client.DefaultRequestHeaders.Add("User-Agent", "request");
+                    // Mass Addition
+                    else if(analysedCommit.Stats.Additions > additionThreshold)
+                    {
+                        biasResult.Mass_Addition_Commits.Add(analysedCommit);
+                    }
 
-                        var response = await client.GetAsync(url);
-
-                        string content = await response.Content.ReadAsStringAsync();
-
-                        content = content.Replace(@"\", "");
-
-                        Repo_Commit commit = JsonConvert.DeserializeObject<Repo_Commit>(content);
-
-                        // Check if the commit is a default git one
-
-                        if (commit.Commit.Message == "Add .gitignore and .gitattributes.")
-                        {
-                            biasCommits.Add(commit);
-                        }
-
-                        // Check if the commit exceeds a large amount of additions
-
-                        if (commit.Stats.Additions > additionThreshold)
-                        {
-                            biasCommits.Add(commit);
-                        }
-
-                        // Check if the commit exceeds a large amount of deletions
-
-                        if (commit.Stats.Deletions > deletionThreshold)
-                        {
-                            biasCommits.Add(commit);
-                        }
+                    // Mass Deletion
+                    else if(analysedCommit.Stats.Deletions > deletionThreshold)
+                    {
+                        biasResult.Mass_Deletion_Commits.Add(analysedCommit);
                     }
                 }
             }
 
-            return biasCommits;
+            return biasResult;
         }
     }
 }

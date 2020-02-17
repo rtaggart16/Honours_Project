@@ -23,6 +23,8 @@ namespace Honours_Project.Models
 
     public class Contribution_Request
     {
+        public string Author_Id { get; set; }
+
         public Repo_Total Repo { get; set; }
 
         public Repo_Total User { get; set; }
@@ -37,6 +39,8 @@ namespace Honours_Project.Models
     public class Contribution_Result
     {
         public Score_Component Score { get; set; }
+
+        public string Author_Id { get; set; }
     }
 
     //! END Section: Top-level models

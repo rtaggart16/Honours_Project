@@ -84,6 +84,23 @@ namespace Honours_Project.Models
         public List<Repo_Commit> Mass_Deletion_Commits { get; set; }
     }
 
+    public class Repo_Stat_Request
+    {
+        public string User_Name { get; set; }
+
+        public string Repo_Name { get; set; }
+
+        public int Addition_Threshold { get; set; }
+
+        public int Deletion_Threshold { get; set; }
+
+        public DateTime Start { get; set; }
+
+        public DateTime End { get; set; }
+
+        public List<string> Restricted_Commits { get; set; }
+    }
+
     //! END Section: Top-level models
 
 
@@ -118,7 +135,7 @@ namespace Honours_Project.Models
     /// <summary>
     /// Class that contains week-by-week stats about a repository and its collaborators
     /// </summary>
-    public class Repo_Stat_Info
+    /*public class Repo_Stat_Info
     {
         /// <summary>
         /// The total number of commits that a collaborator has made to a repo
@@ -133,6 +150,19 @@ namespace Honours_Project.Models
         /// <summary>
         /// Detailed information about the collaborator
         /// </summary>
+        public Author_Info Author { get; set; }
+    }*/
+
+    public class Repo_Stat_Info
+    {
+        public int Total { get; set; }
+
+        public int Additions { get; set; }
+
+        public int Deletions { get; set; }
+
+        public List<Repo_Commit> Commits { get; set; }
+
         public Author_Info Author { get; set; }
     }
 
@@ -175,7 +205,7 @@ namespace Honours_Project.Models
         /// <summary>
         /// The numerical identifier of the author. Specified by GitHub
         /// </summary>
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// The identifier of the Node. Specified by GitHub

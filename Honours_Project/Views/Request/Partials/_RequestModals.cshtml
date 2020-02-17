@@ -1,0 +1,85 @@
+﻿<div id="repo-bias-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="repo-bias-modal-title" class="modal-title">Repository Bias</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p>Below is a list of the commits that may cause bias to collaborator's contribution score. You can choose to remove these commits from the calculation.</p>
+                    </div>
+                </div>
+
+                <div id="bias-github-commit-display" class="row" style="display:none">
+                    <div class="col-12">
+                        <h5>GitHub Commits</h5>
+                    </div>
+                    <div class="col-12">
+                        <table class="w-100" id="bias-github-commit-table" data-pagination="true">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="id">ID</th>
+                                    <th data-field="author">Author</th>
+                                    <th data-field="message">Message</th>
+                                    <th data-field="additions">Additions</th>
+                                    <th data-field="deletions">Deletions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="bias-addition-commit-display" class="row" style="display:none">
+                    <div class="col-12">
+                        <h5>Mass Addition Commits</h5>
+                    </div>
+                    <div class="col-12">
+                        <table class="w-100" id="bias-addition-commit-table">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="id">ID</th>
+                                    <th data-field="author">Author</th>
+                                    <th data-field="message">Message</th>
+                                    <th data-field="additions">Additions</th>
+                                    <th data-field="deletions">Deletions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="bias-deletion-commit-display" class="row" style="display:none">
+                    <div class="col-12">
+                        <h5>GitHub Commits</h5>
+                    </div>
+                    <div class="col-12">
+                        <table class="w-100" id="bias-deletion-commit-table">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="id">ID</th>
+                                    <th data-field="author">Author</th>
+                                    <th data-field="message">Message</th>
+                                    <th data-field="additions">Additions</th>
+                                    <th data-field="deletions">Deletions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="submit-filtered-contribution-btn" class="btn secondary-btn">Calculate Contribution</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

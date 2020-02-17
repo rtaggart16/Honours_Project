@@ -30,6 +30,7 @@ namespace Honours_Project.Services
             // Initialise the values
             Contribution_Result result = new Contribution_Result
             {
+                Author_Id = request.Author_Id,
                 Score = new Score_Component()
                 {
                     Commit_Score = Calculate_Commit_Score(request.User.Commit_Total, request.Repo.Commit_Total, request.Author_Total),
@@ -92,7 +93,7 @@ namespace Honours_Project.Services
         /// <returns></returns>
         public decimal Calculate_Deletion_Score(int userDeletions, int repoDeletions, int authorTotal)
         {
-            if (userDeletions == 0)
+            if (repoDeletions == 0)
             {
                 return (DELETION_PERCENTAGE_FACTOR / (decimal)authorTotal);
             }

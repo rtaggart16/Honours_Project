@@ -1,0 +1,153 @@
+﻿/* VARIABLES */
+
+
+/* Main Colours */
+
+$primary: rgb(156,39,176); /* Purple */
+
+$secondary: rgb(105,240,174); /* Green/Blue */
+
+$warn: rgb(244,67,54); /* Red */
+
+$background: rgb(48,48,48); /* Black variation */
+
+/* END: Main Colours */
+
+
+/* Accent Colours */
+
+$background-accent: rgb(66,66,66); /* Dark Grey */
+
+$orange-accent: rgb(255,213,79);
+
+/* END: Accent Colours */
+
+/* END: Variables */
+
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
+for details on configuring this project to bundle and minify static web assets. */
+body {
+    padding-top: 0px;
+    padding-bottom: 20px;
+    background-color: $background !important;
+    color: rgb(255,255,255) !important;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.basic-bottom-spacing {
+    padding-bottom: 10px;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+nav {
+    background-color: $primary !important;
+}
+
+h2 {
+    font-family: 'Roboto', sans-serif;
+}
+
+.hover-container {
+    background: $background-accent !important;
+    color: rgb(255,255,255) !important;
+    border-radius: 2px;
+    display: inline-block;
+    position: relative;
+    /*min-height: 120px;*/
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    text-decoration: none;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.base-padding-bottom {
+    padding-bottom: 10px;
+}
+
+.secondary-btn {
+    background-color: $secondary;
+    color: rgb(255,255,255);
+}
+
+.o-accent {
+    color: $orange-accent !important;
+}
+
+.warn-text {
+    color: $warn;
+}
+
+.secondary-text {
+    color: $secondary;
+}
+
+.primary-text {
+    color: $primary;
+}
+
+// Overwrites
+
+.modal {
+    color: black !important;
+}
+
+.tooltip-inner {
+    background-color: rgb(255,255,255);
+    color: $background-accent !important;
+}
+
+.tooltip.bs-tooltip-right .arrow:before {
+    border-right-color: rgb(255,255,255) !important;
+}
+
+.tooltip.bs-tooltip-left .arrow:before {
+    border-right-color: rgb(255,255,255) !important;
+}
+
+.tooltip.bs-tooltip-bottom .arrow:before {
+    border-right-color: rgb(255,255,255) !important;
+}
+
+.tooltip.bs-tooltip-top .arrow:before {
+    border-right-color: rgb(255,255,255) !important;
+}
+
+.daterangepicker {
+    color: black !important;
+}
+
+.small-height {
+    height: 200px;
+}

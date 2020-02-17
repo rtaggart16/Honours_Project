@@ -1,0 +1,57 @@
+﻿<div class="row">
+    <div class="col-12 text-center">
+        <h2>Make a Request</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="hover-container">
+            <div class="row base-padding-bottom">
+                <div class="col-6">
+                    <input id="request-username-input" class="form-control" placeholder="Username" />
+                </div>
+
+                <div class="col-5">
+                    <select id="request-repository-select" class="form-control">
+                        <option value="-1">Select Repository</option>
+                    </select>
+                </div>
+
+                <div class="col-1 text-center">
+                    <span id="repos-fetched-icon" style="display:none" data-toggle="tooltip" data-placement="top" title="The user's repositories have been fetched successfully"><i class="fas fa-check fa-2x secondary-text"></i></span>
+                    <span id="repos-not-fetched-icon" data-toggle="tooltip" data-placement="top" title="The user's repositories have not been fetched"><i class="fas fa-exclamation-triangle warn-text fa-2x"></i></span>
+                    <span id="repos-loading-icon" style="display:none" data-toggle="tooltip" data-placement="top" title="The user's repositories are being loaded"><i class="fas fa-spinner fa-spin fa-2x o-accent"></i></span>
+                </div>
+            </div>
+
+            <div class="row base-padding-bottom">
+                <div class="col-6">
+                    <input id="request-add-threshold-input" type="number" min="0" step="1" class="form-control" placeholder="Addition Threshold" />
+                </div>
+
+                <div class="col-6">
+                    <input id="request-del-threshold-input" type="number" min="0" step="1" class="form-control" placeholder="Deletion Threshold" />
+                </div>
+            </div>
+
+            <div class="row base-padding-bottom">
+                <div class="col-12">
+                    <input class="form-control" id="request-range-picker" />
+                </div>
+            </div>
+
+            <div class="row base-padding-bottom">
+                <div class="col-12">
+                    <button id="submit-request-btn" class="btn w-100 secondary-btn">Submit</button>
+                </div>
+            </div>
+
+            <div class="row" id="request-loader-container" style="display:none">
+                <div class="col-12 text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x o-accent"></i> <span class="o-accent" id="request-loader-text"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

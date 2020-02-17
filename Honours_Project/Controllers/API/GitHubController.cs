@@ -43,26 +43,26 @@ namespace Honours_Project.Controllers
             return await _githubService.Get_User_Repositories(userName);
         }
 
-        [HttpGet]
-        [Route("get/repo/bias/{userName}/{repoName}/{additionThreshold}/{deletionThreshold}")]
-        public Task<Repo_Bias_Result> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold)
+        [HttpPost]
+        [Route("get/repo/bias")]
+        public Task<Repo_Bias_Result> Get_Repo_Bias([FromBody]Repo_Stat_Request requestData)
         {
-            return _githubService.Get_Repo_Bias(userName, repoName, additionThreshold, deletionThreshold);
+            return _githubService.Get_Repo_Bias(requestData);
         }
 
-        [HttpGet]
-        [Route("get/repository/stats/{userName}/{repoName}/{start}/{end}")]
-        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end)
+        [HttpPost]
+        [Route("get/repository/stats")]
+        public async Task<Repo_Stat_Result> Get_Repository_Stats([FromBody]Repo_Stat_Request requestData)
         {
-            return await _githubService.Get_Repository_Stats(userName, repoName, start, end);
+            return await _githubService.Get_Repository_Stats(requestData);
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("get/repository/commits/{userName}/{repoName}/{pageNumber}")]
         public async Task<Repo_Commit_Result> Get_Repository_Stats(string userName, string repoName, int pageNumber)
         {
             return await _githubService.Get_Repository_Commits(userName, repoName, pageNumber);
-        }
+        }*/
 
         [HttpGet]
         [Route("get/graphql/commits")]

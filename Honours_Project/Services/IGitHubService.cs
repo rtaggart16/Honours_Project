@@ -14,11 +14,11 @@ namespace Honours_Project
     {
         Task<Repo_List_Result> Get_User_Repositories(string userName);
 
-        Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end);
+        Task<Repo_Stat_Result> Get_Repository_Stats(Repo_Stat_Request requestData);
 
         Task<Repo_Commit_Result> Get_Repository_Commits(string userName, string repoName, int pageNumber);
 
-        Task<Repo_Bias_Result> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold);
+        Task<Repo_Bias_Result> Get_Repo_Bias(Repo_Stat_Request requestData);
     }
 
     public class GitHubService : IGitHubService
@@ -43,7 +43,7 @@ namespace Honours_Project
             return (Repo_List_Result)returnObj;
         }
 
-        public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end)
+        /*public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end)
         {
             var url = "https://api.github.com/repos/" + userName + "/" + repoName + "/stats/contributors";
 
@@ -112,6 +112,128 @@ namespace Honours_Project
             {
                 return parsedObj;
             }
+        }*/
+
+        public async Task<Repo_Stat_Result> Get_Repository_Stats(Repo_Stat_Request requestData)
+        {
+            List<Repo_Stat_Info> stats = new List<Repo_Stat_Info>();
+
+            List<Repo_Commit> allCommits = new List<Repo_Commit>();
+
+            // 1. Get all commits for repo
+
+            bool allCommitsFetched = false;
+
+            var pass = 1;
+
+            List<Node> nodes = new List<Node>();
+
+            var after = "";
+
+            var branch = "master";
+
+            do
+            {
+                var query = "";
+
+                if (pass != 1)
+                {
+                    query = "query { repository(name: \"" + requestData.Repo_Name + "\", owner: \"" + requestData.User_Name + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl id } name email date } changedFiles additions deletions } } } } } } } }";
+                }
+                else
+                {
+                    query = "query { repository(name: \"" + requestData.Repo_Name + "\", owner: \"" + requestData.User_Name + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl id } name email date } changedFiles additions deletions } } } } } } } }";
+                }
+
+                var response = await _graphQLService.Perform_GraphQL_Request(query, GitHub_Model_Types.GraphQL_Repository_Result);
+
+                var parsedResponse = (GraphQLRepositoryResult)response;
+
+                pass++;
+
+                if (parsedResponse.Errors.Count() == 0)
+                {
+                    nodes.AddRange(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.Edges.Select(x => x.Node));
+
+                    if (parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.HasNextPage)
+                    {
+                        after = parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.EndCursor;
+                    }
+                    else
+                    {
+                        allCommitsFetched = true;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+
+            } while (allCommitsFetched == false);
+
+            foreach (var node in nodes)
+            {
+                allCommits.Add(new Repo_Commit()
+                {
+                    Sha = node.Oid,
+                    Author = new Author_Info()
+                    {
+                        Login = node.Author.User.Login,
+                        Avatar_Url = node.Author.User.AvatarUrl,
+                        Id = node.Author.User.Id
+                    },
+                    Commit = new Commit()
+                    {
+                        Message = node.Message,
+                        Committer = new Commiter()
+                        {
+                            Date = node.Author.Date,
+                            Email = node.Author.Email,
+                            Message = node.Message,
+                            Name = node.Author.Name
+                        }
+                    },
+                    Stats = new Commit_Stats()
+                    {
+                        Additions = node.Additions,
+                        Deletions = node.Deletions,
+                        Total = (node.Additions + node.Deletions),
+                        Changed_Files = node.ChangedFiles
+                    }
+                });
+            }
+
+            foreach(var author in allCommits.Select(x => x.Author.Login).Distinct())
+            {
+                var authorUrl = allCommits.FirstOrDefault(x => x.Author.Login == author).Author.Avatar_Url;
+                var authorId = allCommits.FirstOrDefault(x => x.Author.Login == author).Author.Id;
+
+                var authorCommits = allCommits.Where(x => x.Author.Login == author && !requestData.Restricted_Commits.Contains(x.Sha) && x.Commit.Committer.Date >= requestData.Start && x.Commit.Committer.Date <= requestData.End).ToList();
+
+                stats.Add(new Repo_Stat_Info()
+                {
+                    Author = new Author_Info()
+                    {
+                        Login = author,
+                        Avatar_Url = authorUrl,
+                        Id = authorId
+                    },
+                    Commits = authorCommits,
+                    Total = authorCommits.Count(),
+                    Additions = authorCommits.Select(x => x.Stats.Additions).Sum(),
+                    Deletions = authorCommits.Select(x => x.Stats.Deletions).Sum()
+                });
+            }
+
+            return new Repo_Stat_Result()
+            {
+                Stats = stats,
+                Status = new Status()
+                {
+                    Status_Code = 200,
+                    Message = "OK"
+                }
+            };
         }
 
         public async Task<Repo_Commit_Result> Get_Repository_Commits(string userName, string repoName, int pageNumber)
@@ -157,7 +279,7 @@ namespace Honours_Project
             }
         }
 
-        public async Task<Repo_Bias_Result> Get_Repo_Bias(string userName, string repoName, int additionThreshold, int deletionThreshold)
+        public async Task<Repo_Bias_Result> Get_Repo_Bias(Repo_Stat_Request requestData)
         {
             /*
              * Tasks:
@@ -196,11 +318,11 @@ namespace Honours_Project
 
                 if (pass != 1)
                 {
-                    query = "query { repository(name: \"" + repoName + "\", owner: \"" + userName + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
+                    query = "query { repository(name: \"" + requestData.Repo_Name + "\", owner: \"" + requestData.User_Name + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
                 }
                 else
                 {
-                    query = "query { repository(name: \"" + repoName + "\", owner: \"" + userName + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
+                    query = "query { repository(name: \"" + requestData.Repo_Name + "\", owner: \"" + requestData.User_Name + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
                 }
 
                 var response = await _graphQLService.Perform_GraphQL_Request(query, GitHub_Model_Types.GraphQL_Repository_Result);
@@ -229,7 +351,7 @@ namespace Honours_Project
 
             } while (allCommitsFetched == false);
 
-            foreach(var node in nodes)
+            foreach(var node in nodes.Where(x => x.Author.Date >= requestData.Start && x.Author.Date <= requestData.End))
             {
                 allCommits.Add(new Repo_Commit()
                 {
@@ -275,13 +397,13 @@ namespace Honours_Project
                     }
 
                     // Mass Addition
-                    else if(analysedCommit.Stats.Additions > additionThreshold)
+                    else if(analysedCommit.Stats.Additions > requestData.Addition_Threshold)
                     {
                         biasResult.Mass_Addition_Commits.Add(analysedCommit);
                     }
 
                     // Mass Deletion
-                    else if(analysedCommit.Stats.Deletions > deletionThreshold)
+                    else if(analysedCommit.Stats.Deletions > requestData.Deletion_Threshold)
                     {
                         biasResult.Mass_Deletion_Commits.Add(analysedCommit);
                     }

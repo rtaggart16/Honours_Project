@@ -86,5 +86,7 @@ namespace Honours_Project.Models
         public string Login { get; set; }
 
         public string AvatarUrl { get; set; }
+
+        public string Id { get; set; }
     }
 }

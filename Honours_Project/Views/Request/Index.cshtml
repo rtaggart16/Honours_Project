@@ -9,10 +9,6 @@
         @await Html.PartialAsync("~/Views/Request/Partials/Request_Builder/_RequestBuilder.cshtml")
     </div>
 
-    <div id="overall-repo-pie-container" style="display:none">
-        @await Html.PartialAsync("~/Views/Request/Partials/Overall_Repo_Pie/_Overall_Repo_Pie.cshtml")
-    </div>
-
     <div id="all-request-results-container" style="display:none">
         @await Html.PartialAsync("~/Views/Request/Partials/All_Request_Results/_AllRequestResults.cshtml")
     </div>
@@ -21,6 +17,8 @@
 
 <div id="single-request-result-container" style="display:none">
     @await Html.PartialAsync("~/Views/Request/Partials/Single_Request_Results/_SingleRequestResult.cshtml")
+
+    @await Html.PartialAsync("~/Views/Request/Partials/Collaborator_Commit_Timeline/_Colloborator_Commit_Timeline.cshtml")
 </div>
 
 @await Html.PartialAsync("~/Views/Request/Partials/_RequestModals.cshtml")

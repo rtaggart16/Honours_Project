@@ -1,6 +1,6 @@
 ﻿let stats = [];
 
-let pieData = [];
+let scores = [];
 
 function Get_User_Repo_Request_Handler(result) {
     if (result.status.status_Code == 200) {
@@ -33,6 +33,19 @@ function Get_Repo_Bias_Request_Handler(result) {
         Display_Sweet_Alert('success', noBiasBasicSwalOptions, null);
     }
     else {
+        $('#bias-github-commit-table').bootstrapTable('destroy');
+        $('#bias-addition-commit-table').bootstrapTable('destroy');
+        $('#bias-deletion-commit-table').bootstrapTable('destroy');
+
+        $('#bias-github-commit-display').fadeOut(300);
+        $('#bias-github-commit-display').removeClass('visible');
+
+        $('#bias-addition-commit-display').fadeOut(300);
+        $('#bias-addition-commit-display').removeClass('visible');
+
+        $('#bias-deletion-commit-display').fadeOut(300);
+        $('#bias-deletion-commit-display').removeClass('visible');
+
         if (result.gitHub_Commits.length > 0) {
             let githubTableData = [];
 
@@ -68,6 +81,8 @@ function Get_Repo_Bias_Request_Handler(result) {
                     deletions: val.stats.deletions
                 });
             })
+
+            console.log(additionTableData);
 
             $('#bias-addition-commit-table').bootstrapTable({
                 data: additionTableData
@@ -127,12 +142,7 @@ function Get_Repo_Stats_Handler(result) {
         repoInfo.Deletion_Total += val.deletions;
     });
 
-    $.each(result.stats, function (key, val) {
-        console.log(val);
-        
-        let valString = "\"" + JSON.stringify(val) + "\"";
-        console.log(valString);
-        
+    $.each(result.stats, function (key, val) {        
         let authorHTML = '<div class="col-4">' +
             '<div class="hover-container">' +
             '<div class="row">' +
@@ -184,21 +194,12 @@ function Get_Repo_Stats_Handler(result) {
         Submit_AJAX_POST_Request(requestEndpointContainer.getContributionScore, contributionRequestObj, Get_Contribution_Score_Handler);
     })
 
-    $('#all-request-results-container').fadeIn(300);
+    $('#all-request-results-container').fadeIn(300).promise().done(function () {
+        $('#request-loader-container').slideUp();
+    });
 }
 
 function Get_Contribution_Score_Handler(result) {
-    console.log(result);
-
+    scores.push(result);
     $('#' + result.author_Id + '-score').text(result.score.contribution_Score.toFixed(2));
-
-    let processedItemVal = stats.find(x => x.author.id == result.author_Id);
-    let processedItems = stats.indexOf(processedItemVal);
-
-    if ((processedItems + 1) == stats.length) {
-        Display_Overall_Repo_Pie({ name: processedItemVal.author.login, y: result.score.contribution_Score }, true);
-    }
-    else {
-        Display_Overall_Repo_Pie({ name: processedItemVal.author.login, y: result.score.contribution_Score }, false);
-    }
 }

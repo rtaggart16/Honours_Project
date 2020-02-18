@@ -30,7 +30,7 @@ function Configure_Request_Date_Ranges() {
     // Request Range Picker
     let currentDate = new Date();
     let lastMonth = new Date();
-    
+
     lastMonth.setDate(lastMonth.getDate() - 31);
 
     requestDateRange.start = currentDate;
@@ -181,6 +181,10 @@ function Handle_Request_Username_Blur() {
 }
 
 function Handle_Filtered_Contribution_Submit_Click() {
+    $('#repo-bias-modal').modal('hide').promise().done(function () {
+        $('#request-loader-text').text('Loading filtered repository stats...');
+        $('#request-loader-container').slideDown();
+    })
     // Check to see what tables are visible
 
     let githubVisible = $('#bias-github-commit-display').hasClass('visible');
@@ -205,8 +209,6 @@ function Handle_Filtered_Contribution_Submit_Click() {
         $.each(deletionSelections, function (key, val) { restrictedShas.push(val.id) });
     }
 
-    console.log(restrictedShas);
-
     let username = $('#request-username-input').val();
     let repositoryName = $('#request-repository-select').val();
     let addThreshold = $('#request-add-threshold-input').val();
@@ -225,89 +227,7 @@ function Handle_Filtered_Contribution_Submit_Click() {
     Submit_AJAX_POST_Request(requestEndpointContainer.getRepoStats, filteredRequestObj, Get_Repo_Stats_Handler);
 }
 
-function Display_Overall_Repo_Pie(chartItem, render) {
-
-    pieData.push(chartItem);
-
-    /*let chart = Highcharts.chart('overall-repo-pie', {
-        chart: {
-            type: 'pie',
-            
-        },
-        title: {
-            text: 'Collaborator Contribution Overview'
-        },
-        subtitle: {
-            text: ''
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: true
-            }
-        },
-        series: [{
-            name: 'Contribution Score',
-            colorByPoint: true,
-            data: [
-                chartData
-            ]
-        }]
-    });
-
-    console.log(chart);*/
-
-    if (render) {
-        Highcharts.chart('overall-repo-pie', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Browser market shares in January, 2018'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: false
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                name: 'Brands',
-                colorByPoint: true,
-                data: pieData
-            }]
-        });
-
-        $('#overall-repo-pie-container').fadeIn(300);
-    }
-    
-}
-
 function Load_Collaborator_Overview(author) {
-    console.log(author);
-
     let repoInfo = {
         Commit_Total: 0,
         Addition_Total: 0,
@@ -321,6 +241,7 @@ function Load_Collaborator_Overview(author) {
     });
 
     let collaborator = stats.find(x => x.author.id == author);
+    let score = scores.find(x => x.author_Id == author);
 
     console.log(collaborator);
 
@@ -338,20 +259,148 @@ function Load_Collaborator_Overview(author) {
 
     $('#author-top-level-stats').append('<div class="col-4 text-center">' +
         '<h4>Contribution Stats</h4>' +
-        '<h6>Commit Count: ' + collaborator.total + '</h6>' +
-        '<h6>Total Additions: ' + collaborator.additions + '</h6>' +
-        '<h6>Total Deletions: ' + collaborator.deletions + '</h6>' +
+        '<h6>Commit Count: <span class="primary-text">' + collaborator.total + '</span></h6>' +
+        '<h6>Total Additions: <span class="secondary-text">' + collaborator.additions + '</span></h6>' +
+        '<h6>Total Deletions: <span class="warn-text">' + collaborator.deletions + '</span></h6>' +
         '</div>' +
         '<div class="col-4 text-center">' +
         '<h4>Repository Stats</h4>' +
         '<h6>Name: ' + $('#request-repository-select').val() + '</h6>' +
-        '<h6>Total Commits: ' + repoInfo.Commit_Total + '</h6>' +
-        '<h6>Total Additions: ' + repoInfo.Addition_Total + '</h6>' +
-        '<h6>Total Deletions: ' + repoInfo.Deletion_Total + '</h6>' +
+        '<h6>Total Commits: <span class="primary-text">' + repoInfo.Commit_Total + '</span></h6>' +
+        '<h6>Total Additions: <span class="secondary-text">' + repoInfo.Addition_Total + '</span></h6>' +
+        '<h6>Total Deletions: <span class="warn-text">' + repoInfo.Deletion_Total + '</span></h6>' +
         '</div>' +
         '<div class="col-4 text-center">' +
         '<h4>Contribution(%)</h4>' +
         '<div style="height:150px" id="author-contribution-chart"></div>');
+
+    var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '50%'],
+            size: '70%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor:
+                    Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            stops: [
+                [0.1, '#DF5353'], // red
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#55BF3B'], // green
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 2,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        },
+
+        exporting: {
+            enabled: false
+        }
+    };
+
+    // The speed gauge
+    var chartSpeed = Highcharts.chart('author-contribution-chart', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 100,
+            title: {
+                text: 'Contribution'
+            }
+        },
+
+        credits: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Contribution',
+            data: [score.score.contribution_Score],
+            dataLabels: {
+                format:
+                    '<div style="text-align:center; padding-top: 5px;">' +
+                    '<span style="font-size:12px">{y:.1f}</span><br/>' +
+                    '<span style="font-size:12px;opacity:0.4">%</span>' +
+                    '</div>'
+            },
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }]
+
+    }));
+
+    // Timeline
+
+    let timelineData = [];
+
+    $.each(collaborator.commits, function (key, val) {
+        timelineData.push({
+            name: val.commit.committer.date,
+            label: val.commit.message,
+            description: '<b>Author: </b>' + val.author.login + '<br/>' + '<b>Message: </b>' + val.commit.message
+        });
+    });
+
+    Highcharts.chart('collaborator-commit-timeline-chart', {
+        chart: {
+            type: 'timeline',
+            zoomType: 'x'
+        },
+        xAxis: {
+            visible: false
+        },
+        yAxis: {
+            visible: false
+        },
+        title: {
+            text: collaborator.author.login + ' commit history'
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: false
+                }
+            }
+        },
+        series: [{
+            data: timelineData
+        }]
+    });
 
     $('#main-request').fadeOut(300).promise().done(function () {
         $('#single-request-result-container').fadeIn(300);

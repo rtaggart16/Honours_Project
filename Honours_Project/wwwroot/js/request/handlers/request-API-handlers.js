@@ -31,6 +31,26 @@ function Get_Repo_Bias_Request_Handler(result) {
         };
 
         Display_Sweet_Alert('success', noBiasBasicSwalOptions, null);
+
+        $('#request-loader-text').text('Loading repository stats...');
+        $('#request-loader-container').slideDown();
+
+        let username = $('#request-username-input').val();
+        let repositoryName = $('#request-repository-select').val();
+        let addThreshold = $('#request-add-threshold-input').val();
+        let delThreshold = $('#request-del-threshold-input').val();
+
+        let filteredRequestObj = {
+            User_Name: username,
+            Repo_Name: repositoryName,
+            Addition_Threshold: addThreshold,
+            Deletion_Threshold: delThreshold,
+            Start: requestDateRange.start,
+            End: requestDateRange.end,
+            Restricted_Commits: []
+        };
+
+        Submit_AJAX_POST_Request(requestEndpointContainer.getRepoStats, filteredRequestObj, Get_Repo_Stats_Handler);
     }
     else {
         $('#bias-github-commit-table').bootstrapTable('destroy');
@@ -142,7 +162,7 @@ function Get_Repo_Stats_Handler(result) {
         repoInfo.Deletion_Total += val.deletions;
     });
 
-    $.each(result.stats, function (key, val) {        
+    $.each(result.stats, function (key, val) {
         let authorHTML = '<div class="col-4">' +
             '<div class="hover-container">' +
             '<div class="row">' +
@@ -192,6 +212,58 @@ function Get_Repo_Stats_Handler(result) {
         };
 
         Submit_AJAX_POST_Request(requestEndpointContainer.getContributionScore, contributionRequestObj, Get_Contribution_Score_Handler);
+    });
+
+    let orderedStats = stats.sort((a, b) => (a.total < b.total) ? 1 : ((b.total < a.total) ? -1 : 0));
+
+    let commitChartData = [];
+    let commitTableData = '';
+
+    $.each(orderedStats, function (key, val) {
+        commitChartData.push([val.author.login, val.total, val.author.login]);
+
+        commitTableData += '<tr><td>' + (key + 1) + '</td><td>' + val.author.login + '</td><td>' + val.total + '</td></tr>';
+    });
+
+    console.log(commitChartData);
+
+    Highcharts.chart('result-commit-stat-item-chart', {
+
+        chart: {
+            type: 'item'
+        },
+
+        title: {
+            text: 'Collaborator Commit Visualisation'
+        },
+
+        subtitle: {
+            text: ''
+        },
+
+        legend: {
+            labelFormat: '{name} <span style="opacity: 0.4">{y}</span>'
+        },
+
+        series: [{
+            name: 'Commits',
+            keys: ['name', 'y', 'label'],
+            data: commitChartData,
+            dataLabels: {
+                enabled: true,
+                format: '{point.label}'
+            },
+
+            // Circular options
+            center: ['50%', '88%'],
+            size: '170%',
+            startAngle: -100,
+            endAngle: 100
+        }]
+    });
+
+    $('#result-commit-stat-table').empty().promise().done(function () {
+        $('#result-commit-stat-table').append(commitTableData);
     })
 
     $('#all-request-results-container').fadeIn(300).promise().done(function () {

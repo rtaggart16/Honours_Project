@@ -10,6 +10,8 @@
     </div>
 
     <div id="all-request-results-container" style="display:none">
+        @await Html.PartialAsync("~/Views/Request/Partials/All_Request_Result_Commit_Stats/_AllRequestResultCommitStats.cshtml")
+
         @await Html.PartialAsync("~/Views/Request/Partials/All_Request_Results/_AllRequestResults.cshtml")
     </div>
 
@@ -19,6 +21,8 @@
     @await Html.PartialAsync("~/Views/Request/Partials/Single_Request_Results/_SingleRequestResult.cshtml")
 
     @await Html.PartialAsync("~/Views/Request/Partials/Collaborator_Commit_Timeline/_Colloborator_Commit_Timeline.cshtml")
+
+    @await Html.PartialAsync("~/Views/Request/Partials/Collaborator_Score_Breakdown/_CollaboratorScoreBreakdown.cshtml")
 </div>
 
 @await Html.PartialAsync("~/Views/Request/Partials/_RequestModals.cshtml")

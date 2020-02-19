@@ -334,7 +334,7 @@ function Load_Collaborator_Overview(author) {
     };
 
     // The speed gauge
-    var chartSpeed = Highcharts.chart('author-contribution-chart', Highcharts.merge(gaugeOptions, {
+    Highcharts.chart('author-contribution-chart', Highcharts.merge(gaugeOptions, {
         yAxis: {
             min: 0,
             max: 100,
@@ -401,6 +401,98 @@ function Load_Collaborator_Overview(author) {
             data: timelineData
         }]
     });
+
+    // Score Breakdown
+
+    Highcharts.chart('commit-score-gauge', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 50,
+            title: {
+                text: 'Commit'
+            }
+        },
+
+        credits: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Commit',
+            data: [score.score.commit_Score],
+            dataLabels: {
+                format:
+                    '<div style="text-align:center; padding-top: 5px;">' +
+                    '<span style="font-size:12px">{y:.1f}</span><br/>' +
+                    '<span style="font-size:12px;opacity:0.4">%</span>' +
+                    '</div>'
+            },
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }]
+
+    }));
+
+    Highcharts.chart('add-score-gauge', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 25,
+            title: {
+                text: 'Addition'
+            }
+        },
+
+        credits: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Addition',
+            data: [score.score.addition_Score],
+            dataLabels: {
+                format:
+                    '<div style="text-align:center; padding-top: 5px;">' +
+                    '<span style="font-size:12px">{y:.1f}</span><br/>' +
+                    '<span style="font-size:12px;opacity:0.4">%</span>' +
+                    '</div>'
+            },
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }]
+
+    }));
+
+    Highcharts.chart('del-score-gauge', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 25,
+            title: {
+                text: 'Deletion'
+            }
+        },
+
+        credits: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Commit',
+            data: [score.score.deletion_Score],
+            dataLabels: {
+                format:
+                    '<div style="text-align:center; padding-top: 5px;">' +
+                    '<span style="font-size:12px">{y:.1f}</span><br/>' +
+                    '<span style="font-size:12px;opacity:0.4">%</span>' +
+                    '</div>'
+            },
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }]
+
+    }));
 
     $('#main-request').fadeOut(300).promise().done(function () {
         $('#single-request-result-container').fadeIn(300);

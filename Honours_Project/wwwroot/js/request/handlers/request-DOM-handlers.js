@@ -11,6 +11,14 @@
         Handle_Filtered_Contribution_Submit_Click();
     });
 
+    $('#back-to-overview-btn').on('click', function () {
+        Handle_Return_To_Overview_Button_Click();
+    });
+
+    $('#submit-initial-commit-btn').on('click', function () {
+        Handle_Initial_Commit_Button_Click();
+    });
+
     Configure_Request_Date_Ranges();
 }
 
@@ -78,6 +86,71 @@ function Configure_Request_Date_Ranges() {
     }, Request_Date_Range_Callback);
 }
 
+function Handle_Initial_Commit_Button_Click() {
+    restrictedCommits = [];
+    let initCommitSelections = $('#initial-commit-table').bootstrapTable('getSelections');
+
+    $.each(initCommitSelections, function (key, val) {
+        restrictedCommits.push(val.id);
+    })
+
+    // Get all applicable values
+    let username = $('#request-username-input').val();
+    let repositoryName = $('#request-repository-select').val();
+    let addThreshold = $('#request-add-threshold-input').val();
+    let delThreshold = $('#request-del-threshold-input').val();
+    let commitThreshold = $('#request-commit-threshold-input').val();
+
+    let requestValueKeyVal = [
+        {
+            name: 'Username',
+            value: username,
+            validationType: Validation_Types.Emptiness
+        },
+        {
+            name: 'Repository',
+            value: repositoryName,
+            validationType: Validation_Types.Emptiness
+        },
+        {
+            name: 'Addition Threshold',
+            value: addThreshold,
+            validationTypes: Validation_Types.Greater_Than_Zero
+        },
+        {
+            name: 'Deletion Threshold',
+            value: delThreshold,
+            validationTypes: Validation_Types.Greater_Than_Zero
+        },
+        {
+            name: 'Commit Threshold',
+            value: commitThreshold,
+            validationTypes: Validation_Types.Greater_Than_Zero
+        }
+    ];
+
+    let requestDataValid = Basic_Content_Validator(requestValueKeyVal);
+
+    if (requestDataValid) {
+        $('#initial-commit-modal').modal('hide');
+        $('#request-loader-text').text('Loading repository bias...');
+        $('#request-loader-container').slideDown();
+
+        let filteredRequestObj = {
+            User_Name: username,
+            Repo_Name: repositoryName,
+            Addition_Threshold: addThreshold,
+            Deletion_Threshold: delThreshold,
+            Commit_Threshold: commitThreshold,
+            Start: requestDateRange.start,
+            End: requestDateRange.end,
+            Restricted_Commits: restrictedCommits
+        };
+
+        Submit_AJAX_POST_Request(requestEndpointContainer.getRepoBias, filteredRequestObj, Get_Repo_Bias_Request_Handler);
+    }
+}
+
 function Handle_Request_Button_Click() {
     console.log('In Click');
 
@@ -89,6 +162,7 @@ function Handle_Request_Button_Click() {
         let repositoryName = $('#request-repository-select').val();
         let addThreshold = $('#request-add-threshold-input').val();
         let delThreshold = $('#request-del-threshold-input').val();
+        let commitThreshold = $('#request-commit-threshold-input').val();
 
         let requestValueKeyVal = [
             {
@@ -110,24 +184,21 @@ function Handle_Request_Button_Click() {
                 name: 'Deletion Threshold',
                 value: delThreshold,
                 validationTypes: Validation_Types.Greater_Than_Zero
+            },
+            {
+                name: 'Commit Threshold',
+                value: commitThreshold,
+                validationTypes: Validation_Types.Greater_Than_Zero
             }
         ];
 
         let requestDataValid = Basic_Content_Validator(requestValueKeyVal);
 
         if (requestDataValid) {
-            $('#request-loader-text').text('Loading repository bias...');
+            $('#request-loader-text').text('Loading initial commits...');
             $('#request-loader-container').slideDown();
 
-            let filteredRequestObj = {
-                User_Name: username,
-                Repo_Name: repositoryName,
-                Addition_Threshold: addThreshold,
-                Deletion_Threshold: delThreshold,
-                Start: requestDateRange.start,
-                End: requestDateRange.end
-            };
-            Submit_AJAX_POST_Request(requestEndpointContainer.getRepoBias, filteredRequestObj, Get_Repo_Bias_Request_Handler);
+            Submit_GET_Request(requestEndpointContainer.getRepoInitCommits, [{ name: 'userName', value: username }, { name: 'repoName', value: repositoryName }], Get_Initial_Commit_Handler);
         }
     }
     else {
@@ -209,22 +280,32 @@ function Handle_Filtered_Contribution_Submit_Click() {
         $.each(deletionSelections, function (key, val) { restrictedShas.push(val.id) });
     }
 
+    $.each(restrictedCommits, function (key, val) { restrictedShas.push(val); })
+
     let username = $('#request-username-input').val();
     let repositoryName = $('#request-repository-select').val();
     let addThreshold = $('#request-add-threshold-input').val();
     let delThreshold = $('#request-del-threshold-input').val();
+    let commitThreshold = $('#request-commit-threshold-input').val();
 
     let filteredRequestObj = {
         User_Name: username,
         Repo_Name: repositoryName,
         Addition_Threshold: addThreshold,
         Deletion_Threshold: delThreshold,
+        Commit_Threshold: commitThreshold,
         Start: requestDateRange.start,
         End: requestDateRange.end,
         Restricted_Commits: restrictedShas
     };
 
     Submit_AJAX_POST_Request(requestEndpointContainer.getRepoStats, filteredRequestObj, Get_Repo_Stats_Handler);
+}
+
+function Handle_Return_To_Overview_Button_Click() {
+    $('#single-request-result-container').fadeOut(300).promise().done(function () {
+        $('#main-request').fadeIn(300);
+    })
 }
 
 function Load_Collaborator_Overview(author) {
@@ -257,23 +338,25 @@ function Load_Collaborator_Overview(author) {
             '</div>');
     });
 
-    $('#author-top-level-stats').append('<div class="col-4 text-center">' +
-        '<h4>Contribution Stats</h4>' +
-        '<h6>Commit Count: <span class="primary-text">' + collaborator.total + '</span></h6>' +
-        '<h6>Total Additions: <span class="secondary-text">' + collaborator.additions + '</span></h6>' +
-        '<h6>Total Deletions: <span class="warn-text">' + collaborator.deletions + '</span></h6>' +
-        '</div>' +
-        '<div class="col-4 text-center">' +
-        '<h4>Repository Stats</h4>' +
-        '<h6>Name: ' + $('#request-repository-select').val() + '</h6>' +
-        '<h6>Total Commits: <span class="primary-text">' + repoInfo.Commit_Total + '</span></h6>' +
-        '<h6>Total Additions: <span class="secondary-text">' + repoInfo.Addition_Total + '</span></h6>' +
-        '<h6>Total Deletions: <span class="warn-text">' + repoInfo.Deletion_Total + '</span></h6>' +
-        '</div>' +
-        '<div class="col-4 text-center">' +
-        '<h4>Contribution(%)</h4>' +
-        '<div style="height:150px" id="author-contribution-chart"></div>');
-
+    $('#author-top-level-stats').empty().promise().done(function () {
+        $('#author-top-level-stats').append('<div class="col-4 text-center">' +
+            '<h4>Contribution Stats</h4>' +
+            '<h6>Commit Count: <span class="primary-text">' + collaborator.total + '</span></h6>' +
+            '<h6>Total Additions: <span class="secondary-text">' + collaborator.additions + '</span></h6>' +
+            '<h6>Total Deletions: <span class="warn-text">' + collaborator.deletions + '</span></h6>' +
+            '</div>' +
+            '<div class="col-4 text-center">' +
+            '<h4>Repository Stats</h4>' +
+            '<h6>Name: ' + $('#request-repository-select').val() + '</h6>' +
+            '<h6>Total Commits: <span class="primary-text">' + repoInfo.Commit_Total + '</span></h6>' +
+            '<h6>Total Additions: <span class="secondary-text">' + repoInfo.Addition_Total + '</span></h6>' +
+            '<h6>Total Deletions: <span class="warn-text">' + repoInfo.Deletion_Total + '</span></h6>' +
+            '</div>' +
+            '<div class="col-4 text-center">' +
+            '<h4>Contribution(%)</h4>' +
+            '<div style="height:150px" id="author-contribution-chart"></div>');
+    })
+    
     var gaugeOptions = {
 
         chart: {

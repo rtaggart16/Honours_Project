@@ -2,6 +2,8 @@
 
 let scores = [];
 
+let restrictedCommits = [];
+
 function Get_User_Repo_Request_Handler(result) {
     if (result.status.status_Code == 200) {
         if (result.repos.length > 0) {
@@ -139,6 +141,32 @@ function Get_Repo_Bias_Request_Handler(result) {
 
         $('#repo-bias-modal').modal('show');
     }
+}
+
+function Get_Initial_Commit_Handler(result) {
+    $('#request-loader-container').slideUp();
+
+    $('#initial-commit-table').bootstrapTable('destroy');
+
+    let initCommitData = [];
+
+    $.each(result, function (key, val) {
+        initCommitData.push({
+            id: val.sha,
+            author: val.author.login,
+            message: val.commit.message,
+            additions: val.stats.additions,
+            deletions: val.stats.deletions
+        });
+    });
+
+    $('#initial-commit-table').bootstrapTable({
+        data: initCommitData
+    });
+
+    $('#initial-commit-table').bootstrapTable('hideColumn', 'id');
+
+    $('#initial-commit-modal').modal('show');
 }
 
 function Get_Repo_Stats_Handler(result) {

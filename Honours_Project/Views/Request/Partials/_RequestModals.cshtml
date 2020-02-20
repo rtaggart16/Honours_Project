@@ -83,3 +83,46 @@
         </div>
     </div>
 </div>
+
+<div id="initial-commit-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="repo-bias-modal-title" class="modal-title">Potential Initial Commit Bias</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p>Below is a table that displays the initial commits of the target repository. These commits may contribute to bias for a user's contribution score</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <table class="w-100" id="initial-commit-table">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="id">ID</th>
+                                    <th data-field="author">Author</th>
+                                    <th data-field="message">Message</th>
+                                    <th data-field="additions">Additions</th>
+                                    <th data-field="deletions">Deletions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="submit-initial-commit-btn" class="btn secondary-btn">Proceed</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

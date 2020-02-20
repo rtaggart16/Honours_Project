@@ -18,6 +18,8 @@ namespace Honours_Project
 
         Task<Repo_Commit_Result> Get_Repository_Commits(string userName, string repoName, int pageNumber);
 
+        Task<List<Repo_Commit>> Get_Repo_Initial_Commits(string userName, string repoName);
+
         Task<Repo_Bias_Result> Get_Repo_Bias(Repo_Stat_Request requestData);
     }
 
@@ -210,6 +212,13 @@ namespace Honours_Project
 
                 var authorCommits = allCommits.Where(x => x.Author.Login == author && !requestData.Restricted_Commits.Contains(x.Sha) && x.Commit.Committer.Date >= requestData.Start && x.Commit.Committer.Date <= requestData.End).ToList();
 
+                var belowThreshold = false;
+
+                if(authorCommits.Count() < requestData.Commit_Threshold)
+                {
+                    belowThreshold = true;
+                }
+
                 stats.Add(new Repo_Stat_Info()
                 {
                     Author = new Author_Info()
@@ -221,7 +230,8 @@ namespace Honours_Project
                     Commits = authorCommits,
                     Total = authorCommits.Count(),
                     Additions = authorCommits.Select(x => x.Stats.Additions).Sum(),
-                    Deletions = authorCommits.Select(x => x.Stats.Deletions).Sum()
+                    Deletions = authorCommits.Select(x => x.Stats.Deletions).Sum(),
+                    Below_Threshold = belowThreshold
                 });
             }
 
@@ -277,6 +287,97 @@ namespace Honours_Project
                     };
                 }
             }
+        }
+
+        public async Task<List<Repo_Commit>> Get_Repo_Initial_Commits(string userName, string repoName)
+        {
+            List<Repo_Commit> initCommits = new List<Repo_Commit>();
+
+            bool allCommitsFetched = false;
+
+            var pass = 1;
+
+            List<Node> nodes = new List<Node>();
+
+            var after = "";
+
+            var branch = "master";
+
+            do
+            {
+                var query = "";
+
+                if (pass != 1)
+                {
+                    query = "query { repository(name: \"" + repoName + "\", owner: \"" + userName + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100, after: \"" + after + "\") { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
+                }
+                else
+                {
+                    query = "query { repository(name: \"" + repoName + "\", owner: \"" + userName + "\") { ref(qualifiedName: \"" + branch + "\") { target { ... on Commit { id history(first: 100) { pageInfo { hasNextPage, endCursor } edges { node { messageHeadline oid message author { user { login avatarUrl } name email date } changedFiles additions deletions } } } } } } } }";
+                }
+
+                var response = await _graphQLService.Perform_GraphQL_Request(query, GitHub_Model_Types.GraphQL_Repository_Result);
+
+                var parsedResponse = (GraphQLRepositoryResult)response;
+
+                pass++;
+
+                if (parsedResponse.Errors.Count() == 0)
+                {
+                    nodes.AddRange(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.Edges.Select(x => x.Node));
+
+                    if (parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.HasNextPage)
+                    {
+                        after = parsedResponse.RepositoryInfo.Repository.Ref.Target.History.PageInfo.EndCursor;
+                    }
+                    else
+                    {
+                        allCommitsFetched = true;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+
+            } while (allCommitsFetched == false);
+
+            nodes = nodes.OrderBy(x => x.Author.Date).ToList();
+
+            for(int i = 0; i <= 4; i++)
+            {
+                var parsedCommit = new Repo_Commit()
+                {
+                    Sha = nodes[i].Oid,
+                    Author = new Author_Info()
+                    {
+                        Login = nodes[i].Author.User.Login,
+                        Avatar_Url = nodes[i].Author.User.AvatarUrl
+                    },
+                    Commit = new Commit()
+                    {
+                        Message = nodes[i].Message,
+                        Committer = new Commiter()
+                        {
+                            Date = nodes[i].Author.Date,
+                            Email = nodes[i].Author.Email,
+                            Message = nodes[i].Message,
+                            Name = nodes[i].Author.Name
+                        }
+                    },
+                    Stats = new Commit_Stats()
+                    {
+                        Additions = nodes[i].Additions,
+                        Deletions = nodes[i].Deletions,
+                        Total = (nodes[i].Additions + nodes[i].Deletions),
+                        Changed_Files = nodes[i].ChangedFiles
+                    }
+                };
+
+                initCommits.Add(parsedCommit);
+            }
+
+            return initCommits;
         }
 
         public async Task<Repo_Bias_Result> Get_Repo_Bias(Repo_Stat_Request requestData)
@@ -351,7 +452,7 @@ namespace Honours_Project
 
             } while (allCommitsFetched == false);
 
-            foreach(var node in nodes.Where(x => x.Author.Date >= requestData.Start && x.Author.Date <= requestData.End))
+            foreach(var node in nodes.Where(x => x.Author.Date >= requestData.Start && x.Author.Date <= requestData.End && !requestData.Restricted_Commits.Contains(x.Oid)))
             {
                 allCommits.Add(new Repo_Commit()
                 {

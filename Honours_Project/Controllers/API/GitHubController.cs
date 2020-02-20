@@ -57,6 +57,13 @@ namespace Honours_Project.Controllers
             return await _githubService.Get_Repository_Stats(requestData);
         }
 
+        [HttpGet]
+        [Route("get/initial/commits/{userName}/{repoName}")]
+        public async Task<List<Repo_Commit>> Get_Initial_Commits(string userName, string repoName)
+        {
+            return await _githubService.Get_Repo_Initial_Commits(userName, repoName);
+        }
+
         /*[HttpGet]
         [Route("get/repository/commits/{userName}/{repoName}/{pageNumber}")]
         public async Task<Repo_Commit_Result> Get_Repository_Stats(string userName, string repoName, int pageNumber)

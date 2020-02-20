@@ -94,6 +94,8 @@ namespace Honours_Project.Models
 
         public int Deletion_Threshold { get; set; }
 
+        public int Commit_Threshold { get; set; }
+
         public DateTime Start { get; set; }
 
         public DateTime End { get; set; }
@@ -160,6 +162,8 @@ namespace Honours_Project.Models
         public int Additions { get; set; }
 
         public int Deletions { get; set; }
+
+        public bool Below_Threshold { get; set; }
 
         public List<Repo_Commit> Commits { get; set; }
 

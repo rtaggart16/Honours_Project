@@ -156,3 +156,14 @@ h2 {
     height: 350px;
 }
 
+.warn-border {
+    border: 1px solid $warn;
+}
+
+img {
+    max-width: 100% !important;
+}
+
+.clickable {
+    cursor: pointer !important;
+}

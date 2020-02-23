@@ -210,7 +210,7 @@ namespace Honours_Project
                 var authorUrl = allCommits.FirstOrDefault(x => x.Author.Login == author).Author.Avatar_Url;
                 var authorId = allCommits.FirstOrDefault(x => x.Author.Login == author).Author.Id;
 
-                var authorCommits = allCommits.Where(x => x.Author.Login == author && !requestData.Restricted_Commits.Contains(x.Sha) && x.Commit.Committer.Date >= requestData.Start && x.Commit.Committer.Date <= requestData.End).ToList();
+                var authorCommits = allCommits.Where(x => x.Author.Login == author && !requestData.Restricted_Commits.Contains(x.Sha) && x.Commit.Committer.Date.Date >= requestData.Start.Date && x.Commit.Committer.Date.Date <= requestData.End.Date).ToList();
 
                 var belowThreshold = false;
 
@@ -322,7 +322,7 @@ namespace Honours_Project
 
                 pass++;
 
-                if (parsedResponse.Errors.Count() == 0)
+                if (parsedResponse.Errors.Count() == 0 && parsedResponse.RepositoryInfo.Repository.Ref != null)
                 {
                     nodes.AddRange(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.Edges.Select(x => x.Node));
 
@@ -342,39 +342,49 @@ namespace Honours_Project
 
             } while (allCommitsFetched == false);
 
-            nodes = nodes.OrderBy(x => x.Author.Date).ToList();
-
-            for(int i = 0; i <= 4; i++)
+            if(nodes.Count() > 0)
             {
-                var parsedCommit = new Repo_Commit()
-                {
-                    Sha = nodes[i].Oid,
-                    Author = new Author_Info()
-                    {
-                        Login = nodes[i].Author.User.Login,
-                        Avatar_Url = nodes[i].Author.User.AvatarUrl
-                    },
-                    Commit = new Commit()
-                    {
-                        Message = nodes[i].Message,
-                        Committer = new Commiter()
-                        {
-                            Date = nodes[i].Author.Date,
-                            Email = nodes[i].Author.Email,
-                            Message = nodes[i].Message,
-                            Name = nodes[i].Author.Name
-                        }
-                    },
-                    Stats = new Commit_Stats()
-                    {
-                        Additions = nodes[i].Additions,
-                        Deletions = nodes[i].Deletions,
-                        Total = (nodes[i].Additions + nodes[i].Deletions),
-                        Changed_Files = nodes[i].ChangedFiles
-                    }
-                };
+                nodes = nodes.OrderBy(x => x.Author.Date).ToList();
 
-                initCommits.Add(parsedCommit);
+                var checkCount = 4;
+
+                if (nodes.Count() < 5)
+                {
+                    checkCount = (nodes.Count() - 1);
+                }
+
+                for (int i = 0; i <= checkCount; i++)
+                {
+                    var parsedCommit = new Repo_Commit()
+                    {
+                        Sha = nodes[i].Oid,
+                        Author = new Author_Info()
+                        {
+                            Login = nodes[i].Author.User.Login,
+                            Avatar_Url = nodes[i].Author.User.AvatarUrl
+                        },
+                        Commit = new Commit()
+                        {
+                            Message = nodes[i].Message,
+                            Committer = new Commiter()
+                            {
+                                Date = nodes[i].Author.Date,
+                                Email = nodes[i].Author.Email,
+                                Message = nodes[i].Message,
+                                Name = nodes[i].Author.Name
+                            }
+                        },
+                        Stats = new Commit_Stats()
+                        {
+                            Additions = nodes[i].Additions,
+                            Deletions = nodes[i].Deletions,
+                            Total = (nodes[i].Additions + nodes[i].Deletions),
+                            Changed_Files = nodes[i].ChangedFiles
+                        }
+                    };
+
+                    initCommits.Add(parsedCommit);
+                }
             }
 
             return initCommits;
@@ -432,7 +442,7 @@ namespace Honours_Project
 
                 pass++;
 
-                if (parsedResponse.Errors.Count() == 0)
+                if (parsedResponse.Errors.Count() == 0 && parsedResponse.RepositoryInfo.Repository.Ref != null)
                 {
                     nodes.AddRange(parsedResponse.RepositoryInfo.Repository.Ref.Target.History.Edges.Select(x => x.Node));
 
@@ -452,65 +462,74 @@ namespace Honours_Project
 
             } while (allCommitsFetched == false);
 
-            foreach(var node in nodes.Where(x => x.Author.Date >= requestData.Start && x.Author.Date <= requestData.End && !requestData.Restricted_Commits.Contains(x.Oid)))
+            if(nodes.Where(x => x.Author.Date.Date >= requestData.Start.Date && x.Author.Date.Date <= requestData.End.Date && !requestData.Restricted_Commits.Contains(x.Oid)).Count() > 0)
             {
-                allCommits.Add(new Repo_Commit()
+                foreach (var node in nodes.Where(x => x.Author.Date.Date >= requestData.Start.Date && x.Author.Date.Date <= requestData.End.Date && !requestData.Restricted_Commits.Contains(x.Oid)))
                 {
-                    Sha = node.Oid,
-                    Author = new Author_Info()
+                    allCommits.Add(new Repo_Commit()
                     {
-                        Login = node.Author.User.Login,
-                        Avatar_Url = node.Author.User.AvatarUrl
-                    },
-                    Commit = new Commit()
-                    {
-                        Message = node.Message,
-                        Committer = new Commiter()
+                        Sha = node.Oid,
+                        Author = new Author_Info()
                         {
-                            Date = node.Author.Date,
-                            Email = node.Author.Email,
+                            Login = node.Author.User.Login,
+                            Avatar_Url = node.Author.User.AvatarUrl
+                        },
+                        Commit = new Commit()
+                        {
                             Message = node.Message,
-                            Name = node.Author.Name
+                            Committer = new Commiter()
+                            {
+                                Date = node.Author.Date,
+                                Email = node.Author.Email,
+                                Message = node.Message,
+                                Name = node.Author.Name
+                            }
+                        },
+                        Stats = new Commit_Stats()
+                        {
+                            Additions = node.Additions,
+                            Deletions = node.Deletions,
+                            Total = (node.Additions + node.Deletions),
+                            Changed_Files = node.ChangedFiles
                         }
-                    },
-                    Stats = new Commit_Stats()
-                    {
-                        Additions = node.Additions,
-                        Deletions = node.Deletions,
-                        Total = (node.Additions + node.Deletions),
-                        Changed_Files = node.ChangedFiles
-                    }
-                });
-            }
+                    });
+                }
 
-            if (allCommits.Count() > 0)
-            {
-                allCommits = allCommits.OrderBy(x => x.Commit.Committer.Date).ToList();
-
-                // Check first 5 commits for initial bias
-
-                foreach (var analysedCommit in allCommits)
+                if (allCommits.Count() > 0)
                 {
-                    // GitHub Commit
-                    if(analysedCommit.Commit.Message.ToLower().Contains("git"))
-                    {
-                        biasResult.GitHub_Commits.Add(analysedCommit);
-                    }
+                    allCommits = allCommits.OrderBy(x => x.Commit.Committer.Date).ToList();
 
-                    // Mass Addition
-                    else if(analysedCommit.Stats.Additions > requestData.Addition_Threshold)
-                    {
-                        biasResult.Mass_Addition_Commits.Add(analysedCommit);
-                    }
+                    // Check first 5 commits for initial bias
 
-                    // Mass Deletion
-                    else if(analysedCommit.Stats.Deletions > requestData.Deletion_Threshold)
+                    foreach (var analysedCommit in allCommits)
                     {
-                        biasResult.Mass_Deletion_Commits.Add(analysedCommit);
+                        // GitHub Commit
+                        if (analysedCommit.Commit.Message.ToLower().Contains("git"))
+                        {
+                            biasResult.GitHub_Commits.Add(analysedCommit);
+                        }
+
+                        // Mass Addition
+                        else if (analysedCommit.Stats.Additions > requestData.Addition_Threshold)
+                        {
+                            biasResult.Mass_Addition_Commits.Add(analysedCommit);
+                        }
+
+                        // Mass Deletion
+                        else if (analysedCommit.Stats.Deletions > requestData.Deletion_Threshold)
+                        {
+                            biasResult.Mass_Deletion_Commits.Add(analysedCommit);
+                        }
                     }
                 }
-            }
 
+                biasResult.Has_Commits = true;
+            }
+            else
+            {
+                biasResult.Has_Commits = false;
+            }
+            
             return biasResult;
         }
     }

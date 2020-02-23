@@ -22,16 +22,11 @@
                 break;
 
             case Validation_Types.Greater_Than_Zero:
-                if (typeof (val.value) == 'number') {
-                    if (val.value < 0) {
-                        validResult.errors.push(val.name + ' can\'t be less than 0');
-                        validResult.success = false;
-                        validResult.errorType = 'user';
-                    }
-                }
-                else {
-                    validResult.errors.push(val.name + ' must be a valid number');
-                    validResult.success = false
+                console.log('Validating: ', val);
+                if (val.value <= 0) {
+                    validResult.errors.push(val.name + ' can\'t be less than 0');
+                    validResult.success = false;
+                    validResult.errorType = 'user';
                 }
                 break;
         }

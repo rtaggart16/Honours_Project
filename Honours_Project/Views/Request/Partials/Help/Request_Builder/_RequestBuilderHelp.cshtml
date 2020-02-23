@@ -1,0 +1,692 @@
+﻿<div class="row">
+    <div class="col-12 text-center">
+        <h2>Request Builder Help</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <p>Below is some frequently asked questions, as well as a tutorial on how to use the request builder of the application.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div id="request-builder-help-FAQ-selector" class="col-12 clickable">
+        <h3>FAQs <span id="request-builder-help-FAQ-down-icon"><i class="fas fa-chevron-down"></i></span> <span style="display:none" id="request-builder-help-FAQ-up-icon"><i class="fas fa-chevron-up"></i></span></h3>
+    </div>
+</div>
+
+<div id="request-builder-help-FAQ-section" class="row" style="display:none">
+    <div class="col-12 base-padding-bottom">
+        <ul>
+            <li><strong>What is the username field for?</strong></li>
+            <li><strong>What is the select repository for?</strong></li>
+            <li><strong>What is the addition threshold field for?</strong></li>
+            <li><strong>What is the deletion threshold field for?</strong></li>
+            <li><strong>What is the commit threshold field for?</strong></li>
+            <li><strong>What is the date range for?</strong></li>
+            <li><strong>What are the Github, Mass addition and Mass deletion commit tables for?</strong></li>
+            <li><strong>How do I remove commits from my contribution analysis?</strong></li>
+            <li><strong>What is the initial commit analysis for?</strong></li>
+        </ul>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the username field for</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/usernameField.PNG" />
+            </div>
+            <div class="col-12">
+                <p>The username field (above) is used to specify the GitHub username of the owner of the repository that you wish to analyse. The username must be valid otherwise you will receive an error message such as:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/usernameInvalidMessage.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the select repository for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/selectRepo.PNG" />
+            </div>
+            <div class="col-12">
+                The select repository select box is to allow you to specify one of the public repositories owned by the user, specified by the input field, to analyse. The select box has three possible states:
+            </div>
+            <div class="col-12 text-center">
+                <table class="table w-100">
+                    <thead>
+                        <tr>
+                            <th>Icon</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Analysis Possible</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span><i class="fas fa-exclamation-triangle warn-text fa-2x"></i></span></td>
+                            <td>Repositories not fetched</td>
+                            <td>The repositories for a given user have not been fetched. This is the default state when the page is loaded</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><span><i class="fas fa-spinner fa-spin fa-2x o-accent"></i></span></td>
+                            <td>Repositories fetching</td>
+                            <td>The repositories for the given, valid, username are currently being fetched</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><span><i class="fas fa-check fa-2x secondary-text"></i></span></td>
+                            <td>Repositories fetched</td>
+                            <td>The repositories for the given, valid, username have been fetched and have been added to the repository select box</td>
+                            <td>Yes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the addition threshold for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/additionThresholdField.PNG" />
+            </div>
+            <div class="col-12">
+                <p>
+                    The addition threshold allows you to specify the number of additions per commit that you want to flag up when performing analysis. For example, specifying an addition threshold of 5000 would notify you of all commits with over 5000 additions logged against them.
+
+                    The addition threshold can help you identify potential mass addition commits that may cause bias to the score of collaborators. These commits can be removed from the contribution analysis.
+
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the deletion threshold for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/deletionThreshold.PNG" />
+            </div>
+            <div class="col-12">
+                <p>
+                    Similar to the addition threshold, the deletion threshold allows you to specify the number of additions per commit that you want to flag up when performing analysis. For example, specifying a deletion threshold of 5000 would notify you of all commits with over 5000 deletions logged against them.
+
+                    The deletion threshold can help you identify potential mass deletion commits that may cause bias to the score of collaborators. These commits can be removed from the contribution analysis.
+
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the commit threshold for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/commitThreshold.PNG" />
+            </div>
+            <div class="col-12">
+                <p>
+                    Similar to both the addition and deletion threshold, the commit threshold allows you to specify the minimum number of commits you expect a collaborator do have done over the analysis period. For example, specifying a commit threshold of 5 would highlight any collaborator who has committed less than this.
+
+                    The commit threshold can help you identify collaborators who may be under-contributing or being marginalised by a group.
+
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the date range for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/dateRange.PNG" />
+            </div>
+            <div class="col-12">
+                <p>
+                    The date range allows you to analyse a select repository over a given period. The range defaults to the last month, which may result in no results, but can be changed for any range.
+
+                    The date range can be used to ensure that only contributors during the range of a project are analysed or to analyse a smaller period of a large project.
+
+                    The date range is selected using the picker:
+
+                </p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/dateRangePicker.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What are the Github, Mass addition and Mass deletion commit tables for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <p>The Github, Mass addition and mass deletion commit tables are tables that contain commits that are performed by Github or exceed the addition and deletion thresholds.</p>
+            </div>
+            <div class="col-12 text-center">
+                <table class="table w-100">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Contains</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Github commit table</td>
+                            <td>Commits that have been performed by Github</td>
+                            <td>Manipulating .readme files, adding .gitignore files or merging between branches</td>
+                        </tr>
+                        <tr>
+                            <td>Mass addition commit table</td>
+                            <td>Commits that exceed the user-specified addition threshold</td>
+                            <td>Creating a new project, adding libraries or commenting large sections</td>
+                        </tr>
+                        <tr>
+                            <td>Mass deletion commit table</td>
+                            <td>Commits that exceed the user-specified deletion threshold</td>
+                            <td>Refactoring code</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 text-center">
+                <p>All of the above-mentioned tables can be used to identify and exclude commits that you think may cause bias to the contribution score of collaborators.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>How do I remove commits from my contribution analysis?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <p>
+                    To remove commits from contribution analysis, select the checkbox on the left-hand side of the commits that you want to exclude. Once they are checked, these commits will not be included in analysis. Examples:
+                </p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/repoBiasTables.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>I don’t want to exclude commits. How can I do this?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <p>
+                    Commits don’t have to be disregarded before performing analysis. In order to ensure all commits are included in statistics, do not select any commits from the bias or initial commit tables and click proceed.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the initial commit analysis for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <p>
+                    Often projects built using frameworks such as ASP.NET or Maven have large amounts of boilerplate code that is included in the first few commits to a repository. As this code is not explicitly created by a collaborator, including this commit in analysis, may cause their score to be biased.
+
+                    Furthermore, Github often adds commits to repositories when they are created, such as adding .gitignore files, which can also make contribution scores biased.
+
+                    The application allows you analyse the first few commits of a repository to help you identify these commits and remove them from analysis if you wish. Some example framework initial commits are:
+
+                </p>
+            </div>
+            <div class="col-12 text-center">
+                <table class="table w-100">
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>Commit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ASP.NET Core</td>
+                            <td>Add project files.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12">
+                <p>An example of how to view and exclude initial commits is:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/initCommitAnalysis.PNG" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="request-builder-help-tutorial-selector" class="col-12 clickable">
+        <h3>Tutorial <span id="request-builder-help-tutorial-down-icon"><i class="fas fa-chevron-down"></i></span> <span style="display:none" id="request-builder-help-tutorial-up-icon"><i class="fas fa-chevron-up"></i></span></h3>
+    </div>
+</div>
+
+<div id="request-builder-help-tutorial-section" class="row" style="display:none">
+    <div class="col-12 base-padding-bottom">
+        <ul>
+            <li>
+                Step 1 - Enter the Github username of the owner of the repository you want to analyse
+                <ul>
+                    <li>
+                        Part 1 - Enter the username
+                        <ul>
+                            <li>Possible errors</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Step 2 - Select the target repository
+                <ul>
+                    <li>
+                        Part 1 - Select the repository from the select box
+                        <ul>
+                            <li>
+                                Possible errors
+                                <ul>
+                                    <li>Invalid username</li>
+                                    <li>No public repositories</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>Recap</li>
+                </ul>
+            </li>
+            <li>
+                Step 3 - Enter thresholds for additions, deletions and commits
+                <ul>
+                    <li>
+                        Part 1 - Enter the addition threshold
+                        <ul>
+                            <li>Possible errors</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Part 2 - Enter the deletion threshold
+                        <ul>
+                            <li>Possible errors</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Part 3 - Enter the commit threshold
+                        <ul>
+                            <li>Possible errors</li>
+                        </ul>
+                    </li>
+                    <li>Recap</li>
+                </ul>
+            </li>
+            <li>
+                Step 4 - Select the date range
+                <ul>
+                    <li>
+                        Part 1 - Select date range for analysis
+                        <ul>
+                            <li>Possible errors</li>
+                        </ul>
+                    </li>
+                    <li>Recap</li>
+                </ul>
+            </li>
+            <li>
+                Step 5 - Submit options
+            </li>
+            <li>
+                Step 6 - Handle initial commit bias
+                <ul>
+                    <li>
+                        Part 1 - Decide the commits you want to exclude
+                        <ul>
+                            <li>Potential errors</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Step 7 - Handle threshold bias
+                <ul>
+                    <li>
+                        Part 1 - Decide the commits you want to exclude
+                        <ul>
+                            <li>
+                                Possible errors
+                                <ul>
+                                    <li>No commits in range</li>
+                                    <li>No repository bias</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Stage 8 - Complete
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 1 - Enter the Github username of the owner of the repository you want to analyse</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/usernameField.PNG" />
+            </div>
+            <div class="col-12">
+                <h5>Part 1 - Enter the username</h5>
+            </div>
+            <div class="col-12">
+                <p>
+                    The only process for this step is to enter the desired username into the username field. The case of the username is not important i.e. RTAGGART16 has the same effect as using rtaggart16.
+
+                    Once the username is entered, click or tab off of the input to start the repository fetch. Move onto stage 2.
+                </p>
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <p>If you do not fill in the username field correctly i.e. leave it blank you will receive the following error:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/usernameInvalidMessage.PNG" />
+            </div>
+            <div class="col-12">
+                <p>To fix this, re-enter the username correctly</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 2 - Select the target repository</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/selectRepo.PNG" />
+            </div>
+            <div class="col-12">
+                <h5>Part 1 - Select the repository from the select box</h5>
+            </div>
+            <div class="col-12">
+                <p>If the username you entered in Step 1 was valid, and the user had public repositories, a list of the user’s repositories will be displayed. From this list, select the repository you wish to validate so that the value of the select box is updated such as:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/tutorialStep2Success.PNG" />
+            </div>
+            <div class="col-12">
+                <p>Once the repository is selected, you are ready to move on to the next step.</p>
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <span>Invalid username</span>
+            </div>
+            <div class="col-12">
+                <span>The repository select box may not display any values if the username you inputted in step 1 was not a valid username. To check if the user is valid, navigate to <a href="https://github.com/" target="_blank">Github</a> and search for the username. If the user’s account displayed, check the next possible issue. If the user’s account is not displayed, the username you are entering is not valid. Ensure that you use the “All of Github” and “Users” option.</span>
+            </div>
+            <div class="col-12">
+                <span>No public repositories</span>
+            </div>
+            <div class="col-12">
+                <p>The application is only able to fetch public repositories for a user. If no repositories are available, it may be that the target repository is a private repository which means it can’t currently be analysed. In order to still analyse the repository, the owner would have to make it public.</p>
+            </div>
+            <div class="col-12">
+                <h5>Recap</h5>
+            </div>
+            <div class="col-12">
+                At this point in the tutorial, you should have entered a valid Github username and selected one of the user’s public repositories from the list which may look something like the following:
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/tutorialStep1_2Recap.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 3 - Enter the thresholds for additions, deletions and commits</h4>
+            </div>
+            <div class="col-12">
+                <h5>Part 1 - Enter the addition threshold</h5>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/additionThresholdField.PNG" />
+            </div>
+            <div class="col-12">
+                The addition threshold allows you to flag up commits with additions over a certain value. In the addition threshold field, enter a valid integer value such as 5000. The threshold should be relative to the size of the target repository.
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <p>The addition threshold has to be a positive whole number. Any deviation from this will result in an error similar to the following:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/addThresholdError.PNG" />
+            </div>
+            <div class="col-12">
+                <h5>Part 2 - Enter the deletion threshold</h5>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/deletionThreshold.PNG" />
+            </div>
+            <div class="col-12">
+                <p>The deletion threshold allows you to flag up commits with deletions over a certain value. In the deletion threshold field, enter a valid integer value such as 5000. The threshold should be relative to the size of the target repository.</p>
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <p>The deletion threshold has to be a positive whole number. Any deviation from this will result in an error similar to the following:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/deletionThresholdError.PNG" />
+            </div>
+            <div class="col-12">
+                <h5>Part 3 - Enter the commit threshold</h5>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/commitThreshold.PNG" />
+            </div>
+            <div class="col-12">
+                <p>The commit threshold allows you to flag up users with commits under a certain value. In the commit threshold field, enter a valid integer value such as 15. The threshold should be relative to the size of the target repository and the date range you are using.</p>
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <p>The commit threshold has to be a positive whole number. Any deviation from this will result in an error similar to the following:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/commitThresholdError.PNG" />
+            </div>
+            <div class="col-12">
+                <h5>Recap</h5>
+            </div>
+            <div class="col-12">
+                <p>At this point in the tutorial, you should have entered a valid Github username and selected one of the user’s public repositories from the list and entered thresholds for additions, deletions and commits. This may look something like the following:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/tutorialStep2_3Recap.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 4 - Select date range</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/dateRange.PNG" />
+            </div>
+            <div class="col-12">
+                <h5>Part 1 - Select date range for analysis</h5>
+            </div>
+            <div class="col-12">
+                <p>The date range allows you to select the range of data that you want to analyse. This range can be as little as a day or a year (or more). In order to select your range, click the input and click the start and end date you want to use and click apply, such as:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/dateRangePickerAnnotated.PNG" />
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <p>None</p>
+            </div>
+            <div class="col-12">
+                <h5>Recap</h5>
+            </div>
+            <div class="col-12">
+                <p>At this point in the tutorial, you should have entered a valid Github username and selected one of the user’s public repositories from the list, entered thresholds for additions, deletions and commits and selected an analysis range. This may look something like the following:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/tutorialStep3_4Recap.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 5 - Submit options</h4>
+            </div>
+            <div class="col-12">
+                <p>Now that you have inputted your options, you can now submit and begin analysis.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 6 - Handle initial commit bias</h4>
+            </div>
+            <div class="col-12">
+                <h5>Part 1 - Decide the commits you want to exclude</h5>
+            </div>
+            <div class="col-12">
+                <p>The initial commits of the selected repository will be displayed in a popup dialog. If you want to exclude commits, select the ones you want to exclude using the checkboxes such as:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/initCommitExclusion.PNG" />
+            </div>
+            <div class="col-12">
+                <p>
+                    Once you have selected the commits you want to exclude, click proceed.’
+
+                    Alternatively, if you don’t want to exclude any commits, click proceed without selecting any commits and they will still be included.
+                </p>
+            </div>
+            <div class="col-12">
+                <h6>Potential errors</h6>
+            </div>
+            <div class="col-12">
+                <p>It is possible that the target repository does not have any commits and so initial commit analysis, and all further analysis, is not possible. If this is the case, you will receive an error such as:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/noCommitsFoundSwal.PNG" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 7 - Handle threshold bias</h4>
+            </div>
+            <div class="col-12">
+                <h5>Part 1 - Decide the commits you want to exclude</h5>
+            </div>
+            <div class="col-12">
+                <p>Similar to the initial commit bias handler, the threshold bias popup highlights all commits made by Github, over the addition and finally over the deletion threshold. As with the initial commit handler, you can select commits you don’t want to include in the analysis such as:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/repoBiasTables.PNG" />
+            </div>
+            <div class="col-12">
+                <p>As with the initial commit bias, you can include all commits by not selecting any and clicking calculate contribution.</p>
+            </div>
+            <div class="col-12">
+                <h6>Possible errors</h6>
+            </div>
+            <div class="col-12">
+                <span>No commits in range</span>
+            </div>
+            <div class="col-12">
+                It is possible that the target repository does not contain any commits within the target date range. If this is the case, you will receive an error such as:
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/noCommitsInRangeSwal.PNG" />
+            </div>
+            <div class="col-12">
+                <p>In order to counter this error, select a new range to check if there are commits.</p>
+            </div>
+            <div class="col-12">
+                <span>No repository bias</span>
+            </div>
+            <div class="col-12">
+                <p>This is not necessarily an error as it is possible that no commits in the repository breach your specific thresholds. If this is the case you will see the following:</p>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/request_builder/noBiasFoundSwal.PNG" />
+            </div>
+            <div class="col-12 text-center">
+                <p>Your request for stats will still be processed if you see this message</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12">
+                <h4>Step 8 - Complete</h4>
+            </div>
+            <div class="col-12">
+                <p>
+                    At this point after submitting your bias selections, the popups should disappear and a loader will be displayed displaying that your stats are being loaded. Shortly the statistics related to your options will be loaded.
+
+                    In order to understand how these results are calculated and you can analyse them, read the “Request Results Help”.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

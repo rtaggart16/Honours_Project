@@ -19,6 +19,18 @@
         Handle_Initial_Commit_Button_Click();
     });
 
+    $('#request-builder-help-FAQ-selector').on('click', function () {
+        Handle_Request_Builder_Help_FAQ_Toggle();
+    });
+
+    $('#request-builder-help-tutorial-selector').on('click', function () {
+        Handle_Request_Builder_Help_Tutorial_Toggle();
+    });
+
+    $('#request-builder-help-icon').on('click', function () {
+        Handle_Request_Builder_Help_Icon_Click();
+    });
+
     Configure_Request_Date_Ranges();
 }
 
@@ -92,7 +104,7 @@ function Handle_Initial_Commit_Button_Click() {
 
     $.each(initCommitSelections, function (key, val) {
         restrictedCommits.push(val.id);
-    })
+    });
 
     // Get all applicable values
     let username = $('#request-username-input').val();
@@ -115,23 +127,23 @@ function Handle_Initial_Commit_Button_Click() {
         {
             name: 'Addition Threshold',
             value: addThreshold,
-            validationTypes: Validation_Types.Greater_Than_Zero
+            validationType: Validation_Types.Greater_Than_Zero
         },
         {
             name: 'Deletion Threshold',
             value: delThreshold,
-            validationTypes: Validation_Types.Greater_Than_Zero
+            validationType: Validation_Types.Greater_Than_Zero
         },
         {
             name: 'Commit Threshold',
             value: commitThreshold,
-            validationTypes: Validation_Types.Greater_Than_Zero
+            validationType: Validation_Types.Greater_Than_Zero
         }
     ];
 
     let requestDataValid = Basic_Content_Validator(requestValueKeyVal);
 
-    if (requestDataValid) {
+    if (requestDataValid.success) {
         $('#initial-commit-modal').modal('hide');
         $('#request-loader-text').text('Loading repository bias...');
         $('#request-loader-container').slideDown();
@@ -178,27 +190,36 @@ function Handle_Request_Button_Click() {
             {
                 name: 'Addition Threshold',
                 value: addThreshold,
-                validationTypes: Validation_Types.Greater_Than_Zero
+                validationType: Validation_Types.Greater_Than_Zero
             },
             {
                 name: 'Deletion Threshold',
                 value: delThreshold,
-                validationTypes: Validation_Types.Greater_Than_Zero
+                validationType: Validation_Types.Greater_Than_Zero
             },
             {
                 name: 'Commit Threshold',
                 value: commitThreshold,
-                validationTypes: Validation_Types.Greater_Than_Zero
+                validationType: Validation_Types.Greater_Than_Zero
             }
         ];
 
         let requestDataValid = Basic_Content_Validator(requestValueKeyVal);
 
-        if (requestDataValid) {
+        if (requestDataValid.success) {
             $('#request-loader-text').text('Loading initial commits...');
             $('#request-loader-container').slideDown();
 
             Submit_GET_Request(requestEndpointContainer.getRepoInitCommits, [{ name: 'userName', value: username }, { name: 'repoName', value: repositoryName }], Get_Initial_Commit_Handler);
+        }
+        else {
+            let advancedSwalOptions = {
+                type: 'error',
+                title: 'Request data is invalid',
+                html: Generate_Validation_Error_HTML(requestDataValid.errors)
+            };
+
+            Display_Sweet_Alert('error', { use: false }, advancedSwalOptions);
         }
     }
     else {
@@ -276,6 +297,12 @@ function Handle_Filtered_Contribution_Submit_Click() {
     }
     if (deletionVisible) {
         let deletionSelections = $('#bias-deletion-commit-table').bootstrapTable('getSelections');
+
+        let testMassDels = [];
+
+        $.each(deletionSelections, function (key, val) { testMassDels.push(val.id) });
+
+        console.log('Excluded Mass Deletion Commits: ', testMassDels);
 
         $.each(deletionSelections, function (key, val) { restrictedShas.push(val.id) });
     }
@@ -392,7 +419,7 @@ function Load_Collaborator_Overview(author) {
             ],
             lineWidth: 0,
             minorTickInterval: null,
-            tickAmount: 2,
+            //tickAmount: 2,
             title: {
                 y: -70
             },
@@ -577,7 +604,50 @@ function Load_Collaborator_Overview(author) {
 
     }));
 
+    $('#commit-score-equation-text').text('(' + collaborator.total + ' / ' + repoInfo.Commit_Total + ') * 50');
+    $('#commit-score-equation-result-text').text(score.score.commit_Score.toFixed(2));
+
+    $('#addition-score-equation-text').text('(' + collaborator.additions + ' / ' + repoInfo.Addition_Total + ') * 25');
+    $('#addition-score-equation-result-text').text(score.score.addition_Score.toFixed(2));
+
+    $('#deletion-score-equation-text').text('(' + collaborator.deletions + ' / ' + repoInfo.Deletion_Total + ') * 25');
+    $('#deletion-score-equation-result-text').text(score.score.deletion_Score.toFixed(2));
+
     $('#main-request').fadeOut(300).promise().done(function () {
         $('#single-request-result-container').fadeIn(300);
     })
+}
+
+function Handle_Request_Builder_Help_FAQ_Toggle() {
+    $('#request-builder-help-FAQ-section').slideToggle().promise().done(function () {
+        if ($('#request-builder-help-FAQ-section').is(':visible')) {
+            $('#request-builder-help-FAQ-down-icon').fadeOut(300).promise().done(function () {
+                $('#request-builder-help-FAQ-up-icon').fadeIn(300);
+            })
+        }
+        else {
+            $('#request-builder-help-FAQ-up-icon').fadeOut(300).promise().done(function () {
+                $('#request-builder-help-FAQ-down-icon').fadeIn(300);
+            })
+        }
+    })
+}
+
+function Handle_Request_Builder_Help_Tutorial_Toggle() {
+    $('#request-builder-help-tutorial-section').slideToggle().promise().done(function () {
+        if ($('#request-builder-help-tutorial-section').is(':visible')) {
+            $('#request-builder-help-tutorial-down-icon').fadeOut(300).promise().done(function () {
+                $('#request-builder-help-tutorial-up-icon').fadeIn(300);
+            })
+        }
+        else {
+            $('#request-builder-help-tutorial-up-icon').fadeOut(300).promise().done(function () {
+                $('#request-builder-help-tutorial-down-icon').fadeIn(300);
+            })
+        }
+    })
+}
+
+function Handle_Request_Builder_Help_Icon_Click() {
+    Display_Request_Help_Modal_Section($('#request-builder-help-content'));
 }

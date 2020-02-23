@@ -1,24 +1,73 @@
 ﻿<div class="row">
     <div class="col-4">
         <div class="hover-container">
-            <div id="commit-score-gauge">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h4>Commit Score</h4>
+                </div>
+                <div class="col-12">
+                    <div class="small-height" id="commit-score-gauge">
 
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <h6>(userCommits / repoCommits) * 50</h6>
+                </div>
+                <div class="col-12 text-center">
+                    <h6 id="commit-score-equation-text"></h6>
+                </div>
+                <div class="col-12 text-center">
+                    <h6 class="primary-text" id="commit-score-equation-result-text"></h6>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="hover-container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h4>Addition Score</h4>
+                </div>
+                <div class="col-12">
+                    <div class="small-height" id="add-score-gauge">
+
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <h6>(userAdditions / repoAdditions) * 25</h6>
+                </div>
+                <div class="col-12 text-center">
+                    <h6 id="addition-score-equation-text"></h6>
+                </div>
+                <div class="col-12 text-center">
+                    <h6 class="secondary-text" id="addition-score-equation-result-text"></h6>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="col-4">
         <div class="hover-container">
-            <div id="add-score-gauge">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h4>Deletion Score</h4>
+                </div>
+                <div class="col-12">
+                    <div class="small-height" id="del-score-gauge">
 
-            </div>
-        </div>
-    </div>
-
-    <div class="col-4">
-        <div class="hover-container">
-            <div id="del-score-gauge">
-
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <h6>(userDeletions / repoDeletions) * 25</h6>
+                </div>
+                <div class="col-12 text-center">
+                    <h6 id="deletion-score-equation-text"></h6>
+                </div>
+                <div class="col-12 text-center">
+                    <h6 class="warn-text" id="deletion-score-equation-result-text"></h6>
+                </div>
             </div>
         </div>
     </div>

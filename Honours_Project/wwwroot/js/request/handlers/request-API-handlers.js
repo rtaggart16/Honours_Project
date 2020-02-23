@@ -24,7 +24,7 @@ function Get_User_Repo_Request_Handler(result) {
 function Get_Repo_Bias_Request_Handler(result) {
     $('#request-loader-container').slideUp();
 
-    if (result.gitHub_Commits.length == 0 && result.mass_Addition_Commits.length == 0 && result.mass_Deletion_Commits.length == 0) {
+    if (result.gitHub_Commits.length == 0 && result.mass_Addition_Commits.length == 0 && result.mass_Deletion_Commits.length == 0 && result.has_Commits) {
         let noBiasBasicSwalOptions = {
             use: true,
             title: 'No Bias Found',
@@ -54,7 +54,7 @@ function Get_Repo_Bias_Request_Handler(result) {
 
         Submit_AJAX_POST_Request(requestEndpointContainer.getRepoStats, filteredRequestObj, Get_Repo_Stats_Handler);
     }
-    else {
+    else if (result.gitHub_Commits.length > 0 || result.mass_Addition_Commits.length > 0 || result.mass_Deletion_Commits.length > 0 && result.has_Commits) {
         $('#bias-github-commit-table').bootstrapTable('destroy');
         $('#bias-addition-commit-table').bootstrapTable('destroy');
         $('#bias-deletion-commit-table').bootstrapTable('destroy');
@@ -141,6 +141,16 @@ function Get_Repo_Bias_Request_Handler(result) {
 
         $('#repo-bias-modal').modal('show');
     }
+    else if (result.has_Commits == false) {
+        let basicNoCommitSwalOptions = {
+            use: true,
+            type: 'warning',
+            title: 'No commits found in range',
+            text: 'No commits found in the specified date range. Analysis can\'t be performed'
+        };
+
+        Display_Sweet_Alert('warning', basicNoCommitSwalOptions, null);
+    }
 }
 
 function Get_Initial_Commit_Handler(result) {
@@ -148,25 +158,37 @@ function Get_Initial_Commit_Handler(result) {
 
     $('#initial-commit-table').bootstrapTable('destroy');
 
-    let initCommitData = [];
+    if (result.length > 0) {
+        let initCommitData = [];
 
-    $.each(result, function (key, val) {
-        initCommitData.push({
-            id: val.sha,
-            author: val.author.login,
-            message: val.commit.message,
-            additions: val.stats.additions,
-            deletions: val.stats.deletions
+        $.each(result, function (key, val) {
+            initCommitData.push({
+                id: val.sha,
+                author: val.author.login,
+                message: val.commit.message,
+                additions: val.stats.additions,
+                deletions: val.stats.deletions
+            });
         });
-    });
 
-    $('#initial-commit-table').bootstrapTable({
-        data: initCommitData
-    });
+        $('#initial-commit-table').bootstrapTable({
+            data: initCommitData
+        });
 
-    $('#initial-commit-table').bootstrapTable('hideColumn', 'id');
+        $('#initial-commit-table').bootstrapTable('hideColumn', 'id');
 
-    $('#initial-commit-modal').modal('show');
+        $('#initial-commit-modal').modal('show');
+    }
+    else {
+        let noCommitSwalOptions = {
+            use: true,
+            type: 'warning',
+            title: 'No commits found',
+            text: 'No commits could be found for the target repository. Statistics are unavailable'
+        };
+
+        Display_Sweet_Alert('warning', noCommitSwalOptions, null);
+    }
 }
 
 function Get_Repo_Stats_Handler(result) {
@@ -191,8 +213,14 @@ function Get_Repo_Stats_Handler(result) {
     });
 
     $.each(result.stats, function (key, val) {
+        let borderClass = 'no-border';
+
+        if (val.below_Threshold) {
+            borderClass = 'warn-border';
+        }
+
         let authorHTML = '<div class="col-4">' +
-            '<div class="hover-container">' +
+            '<div class="hover-container ' + borderClass + '">' +
             '<div class="row">' +
             '<div class="col-6 text-center"><img src="' + val.author.avatar_Url + '" style="height:50px; width:50px;"/></div>' +
             '<div class="col-6 text-center"><span class="contribution-text" id="' + val.author.id + '-score"></span></div>' +
@@ -217,7 +245,7 @@ function Get_Repo_Stats_Handler(result) {
             '</table>' +
             '<div class="row">' +
             '<div class="col-12 text-center">' +
-            '<button class="btn btn-info" onclick="Load_Collaborator_Overview(' + '\'' + val.author.id + '\'' + ')">View</button>' +
+            '<button class="btn secondary-btn" onclick="Load_Collaborator_Overview(' + '\'' + val.author.id + '\'' + ')">Details</button>' +
             '</div>' +
             '</div>' +
             '</div>' +

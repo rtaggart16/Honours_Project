@@ -82,6 +82,8 @@ namespace Honours_Project.Models
         public List<Repo_Commit> Mass_Addition_Commits { get; set; }
 
         public List<Repo_Commit> Mass_Deletion_Commits { get; set; }
+
+        public bool Has_Commits { get; set; }
     }
 
     public class Repo_Stat_Request

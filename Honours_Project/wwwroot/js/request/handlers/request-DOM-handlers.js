@@ -27,9 +27,29 @@
         Handle_Request_Builder_Help_Tutorial_Toggle();
     });
 
+    $('#all-request-results-help-FAQ-selector').on('click', function () {
+        Handle_All_Request_Results_Help_FAQ_Toggle();
+    });
+
+    $('#individual-request-results-help-FAQ-selector').on('click', function () {
+        Handle_Individual_Request_Results_Help_FAQ_Toggle();
+    });
+
     $('#request-builder-help-icon').on('click', function () {
         Handle_Request_Builder_Help_Icon_Click();
     });
+
+    $('#display-request-builder-help-btn').on('click', function () {
+        Display_Request_Help_Modal_Section($('#request-builder-help-content'));
+    });
+
+    $('#display-all-request-result-help-btn').on('click', function () {
+        Display_Request_Help_Modal_Section($('#all-request-results-help-content'));
+    });
+
+    $('#display-individual-result-help-btn').on('click', function () {
+        Display_Request_Help_Modal_Section($('#individual-request-results-help-content'));
+    })
 
     Configure_Request_Date_Ranges();
 }
@@ -478,9 +498,9 @@ function Load_Collaborator_Overview(author) {
 
     let timelineData = [];
 
-    $.each(collaborator.commits, function (key, val) {
+    $.each(collaborator.commits.reverse(), function (key, val) {
         timelineData.push({
-            name: val.commit.committer.date,
+            name: moment(val.commit.committer.date).format('DD/MM/YY hh:mm'),
             label: val.commit.message,
             description: '<b>Author: </b>' + val.author.login + '<br/>' + '<b>Message: </b>' + val.commit.message
         });
@@ -648,6 +668,37 @@ function Handle_Request_Builder_Help_Tutorial_Toggle() {
     })
 }
 
+function Handle_All_Request_Results_Help_FAQ_Toggle() {
+    $('#all-request-results-help-FAQ-section').slideToggle().promise().done(function () {
+        if ($('#all-request-results-help-FAQ-section').is(':visible')) {
+            $('#all-request-results-help-FAQ-down-icon').fadeOut(300).promise().done(function () {
+                $('#all-request-results-help-FAQ-up-icon').fadeIn(300);
+            })
+        }
+        else {
+            $('#all-request-results-help-FAQ-up-icon').fadeOut(300).promise().done(function () {
+                $('#all-request-results-help-FAQ-down-icon').fadeIn(300);
+            })
+        }
+    })
+}
+
+function Handle_Individual_Request_Results_Help_FAQ_Toggle() {
+    $('#individual-request-results-help-FAQ-section').slideToggle().promise().done(function () {
+        if ($('#individual-request-results-help-FAQ-section').is(':visible')) {
+            $('#individual-request-results-help-FAQ-down-icon').fadeOut(300).promise().done(function () {
+                $('#individual-request-results-help-FAQ-up-icon').fadeIn(300);
+            })
+        }
+        else {
+            $('#individual-request-results-help-FAQ-up-icon').fadeOut(300).promise().done(function () {
+                $('#individual-request-results-help-FAQ-down-icon').fadeIn(300);
+            })
+        }
+    })
+}
+
 function Handle_Request_Builder_Help_Icon_Click() {
-    Display_Request_Help_Modal_Section($('#request-builder-help-content'));
+    //Display_Request_Help_Modal_Section($('#request-builder-help-content'));
+    Display_Request_Help_Modal_Section($('#request-help-selector-content'));
 }

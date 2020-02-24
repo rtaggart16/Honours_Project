@@ -101,6 +101,16 @@ h2 {
     color: rgb(255,255,255);
 }
 
+.primary-btn {
+    background-color: $primary;
+    color: rgb(255,255,255);
+}
+
+.warn-btn {
+    background-color: $warn;
+    color: rgb(255,255,255);
+}
+
 .o-accent {
     color: $orange-accent !important;
 }

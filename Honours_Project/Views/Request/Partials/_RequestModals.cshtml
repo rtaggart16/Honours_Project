@@ -138,14 +138,18 @@
             </div>
 
             <div class="modal-body">
-                <div id="request-builder-help-content" style="display:none">
+                <div id="request-help-selector-content" class="request-help-modal-content" style="display:none">
+                    @await Html.PartialAsync("~/Views/Request/Partials/Help/Request_Help_Selector/_RequestHelpSelector.cshtml")
+                </div>
+                <div id="request-builder-help-content" class="request-help-modal-content" style="display:none">
                     @await Html.PartialAsync("~/Views/Request/Partials/Help/Request_Builder/_RequestBuilderHelp.cshtml")
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" id="submit-initial-commit-btn" class="btn secondary-btn">Proceed</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <div id="all-request-results-help-content" class="request-help-modal-content" style="display:none">
+                    @await Html.PartialAsync("~/Views/Request/Partials/Help/All_Request_Results/_AllRequestResultsHelp.cshtml")
+                </div>
+                <div id="individual-request-results-help-content" class="request-help-modal-content" style="display:none">
+                    @await Html.PartialAsync("~/Views/Request/Partials/Help/Individual_Result/_IndividualResultHelp.cshtml")
+                </div>
             </div>
         </div>
     </div>

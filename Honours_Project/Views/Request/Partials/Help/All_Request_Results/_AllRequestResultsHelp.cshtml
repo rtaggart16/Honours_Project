@@ -1,0 +1,232 @@
+﻿<div class="row">
+    <div class="col-12 text-center">
+        <h2>All Request Results Help</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <a class="btn secondary-btn" href="~/resources/files/help/all_request_results/All_Request_Results_Help.pdf" target="_blank"><span><i class="far fa-file-pdf"></i> PDF</span></a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <p>Below is some frequently asked questions on how to interpret the results of a request.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div id="all-request-results-help-FAQ-selector" class="col-12 clickable">
+        <h3>FAQs <span id="all-request-results-help-FAQ-down-icon"><i class="fas fa-chevron-down"></i></span> <span style="display:none" id="all-request-results-help-FAQ-up-icon"><i class="fas fa-chevron-up"></i></span></h3>
+    </div>
+</div>
+
+<div id="all-request-results-help-FAQ-section" class="row" style="display:none">
+    <div class="col-12 base-padding-bottom">
+        <ul>
+            <li><strong>What is the purpose of the commit chart and table?</strong></li>
+            <li><strong>What is the collaborator “block” for?</strong></li>
+            <li>
+                <strong>What is the contribution score?</strong>
+                <ul>
+                    <li><strong>Example</strong></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the purpose of the commit chart and table?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/all_request_results/commitVisualisation.PNG" />
+            </div>
+            <div class="col-12">
+                <p>The commit visualisation (above) is a graphical representation of all commits to the repository. This is so you can gain a better understanding of how many commits each collaborator has done, and how they compare to others.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the collaborator "block" for?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/all_request_results/collaboratorBlock.PNG" />
+            </div>
+            <div class="col-12">
+                <p>The collaborator “block” is used to display top-level statistics about a collaborator to a selected repository. A break down of what each field is given below:</p>
+            </div>
+            <div class="col-12 text-center">
+                <table class="table w-100">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Example</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Collaborator Avatar</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorAvatar.PNG" />
+                            </td>
+                            <td>The avatar image that the collaborator has associated with their Github account</td>
+                        </tr>
+                        <tr>
+                            <td>Contribution Score</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorContributionScore.PNG" />
+                            </td>
+                            <td>The overall contribution score of the collaborator for the given request. This is a combination of addition score, deletion score and commit score</td>
+                        </tr>
+                        <tr>
+                            <td>Total Commits</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorTotalCommits.PNG" />
+                            </td>
+                            <td>The total number of commits the collaborator has performed for the given request</td>
+                        </tr>
+                        <tr>
+                            <td>Total Additions</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorTotalAdditions.PNG" />
+                            </td>
+                            <td>The total number of additions the collaborator has performed for the given request</td>
+                        </tr>
+                        <tr>
+                            <td>Total Additions</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorTotalAdditions.PNG" />
+                            </td>
+                            <td>The total number of additions the collaborator has performed for the given request</td>
+                        </tr>
+                        <tr>
+                            <td>Total Deletions</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorTotalDeletions.PNG" />
+                            </td>
+                            <td>The total number of deletions the collaborator has performed for the given request</td>
+                        </tr>
+                        <tr>
+                            <td>View Details</td>
+                            <td>
+                                <img src="~/resources/images/help/all_request_results/collaboratorViewDetails.PNG" />
+                            </td>
+                            <td>A button that allows you to view a detailed breakdown of the specific collaborator</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 base-padding-bottom">
+        <div class="row">
+            <div class="col-12">
+                <h4>What is the contribution score?</h4>
+            </div>
+            <div class="col-12 text-center">
+                <img src="~/resources/images/help/all_request_results/collaboratorContributionScore.PNG" />
+            </div>
+            <div class="col-12">
+                <p>The contribution score is the score given to a collaborator for their overall contribution to a selected repository. The contribution score uses three main items for calculation: commits, additions and deletions. A break down of the score is given below:</p>
+            </div>
+            <div class="col-12 text-center">
+                <table class="table w-100">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Formula</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Commit Score</td>
+                            <td>(userCommits / repoCommits) * 50</td>
+                            <td>The commit score is used to determine what percentage a collaborator has committed to a repository, compared to all other collaborators. The commit score is multiplied by 50 to make up half of the final contribution score. The commit score has so much importance as committing is one of the main actions a collaborator performs</td>
+                        </tr>
+                        <tr>
+                            <td>Addition Score</td>
+                            <td>(userAdditions / repoAdditions) * 25</td>
+                            <td>The addition score is used to determine what percentage a collaborator has added to a repository, compared to all other collaborators. The addition score is multiplied by 25 because additions are a part of commits and therefore not as important as the commit itself </td>
+                        </tr>
+                        <tr>
+                            <td>Deletion Score</td>
+                            <td>(userDeletions / repoDeletions) * 25</td>
+                            <td>The deletion score is used to determine what percentage a collaborator has deleted from a repository, compared to all other collaborators. The deletion score is multiplied by 25 because deletions are a part of commits and therefore not as important as the commit itself</td>
+                        </tr>
+                        <tr>
+                            <td>Contribution Score</td>
+                            <td>(additionScore + deletionScore + commitScore)</td>
+                            <td>The contribution score is the sum of the other three scores for each collaborator. The contribution score is a percentage out of 100 and is meant as an overall summary of a collaborator’s work on a repository</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12">
+                <h5>Example</h5>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>In this example, the repository has 3 collaborators: collaborator A, collaborator B and collaborator C. The repository has a total of 47 commits, 28905 additions and 12456 deletions. The contributions are split up as follows:</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>Collaborator A: 23 commits, 12456 additions and 3456 deletions</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>Collaborator B: 8 commits, 12500 additions and 2000 deletions</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>Collaborator C: 16 commits, 3949 additions and 7000 deletions.</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>Using the formulas from the table:</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <span><strong>Collaborator A:</strong></span>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>
+                    Commit Score: (23 / 47) * 50 = 24.47<br />
+                    Addition Score: (12456 / 28905) * 25 = 10.77<br />
+                    Deletion Score: (3456 / 12456) * 25 = 6.93<br />
+                </p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>Contribution Score (Rounded): (24.47 + 10.77 + 6.93) = 42.17</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <span><strong>Collaborator B:</strong></span>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>
+                    Commit Score: (8 / 47) * 50 = 8.51<br />
+                    Addition Score: (12500 / 28905) * 25 = 10.81<br />
+                    Deletion Score: (2000 / 12456) * 25 = 4.01<br />
+                </p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>Contribution Score (Rounded): (8.51 + 10.81 + 4.01) = 23.33</p>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <span><strong>Collaborator C:</strong></span>
+            </div>
+            <div class="col-12 base-padding-bottom">
+                <p>
+                    Commit Score: (16 / 47) * 50 = 17.02<br />
+                    Addition Score: (3949 / 28905) * 25 = 3.41<br />
+                    Deletion Score: (7000 / 12456) * 25 = 14.04<br />
+                </p>
+            </div>
+            <div class="col-12">
+                <p>Contribution Score (Rounded): (17.02 + 3.41 + 14.04) = 34.47</p>
+            </div>
+        </div>
+    </div>
+</div>

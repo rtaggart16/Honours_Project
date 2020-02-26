@@ -58,12 +58,19 @@ namespace Honours_Project.Services
         /// <returns></returns>
         public decimal Calculate_Commit_Score(int userCommits, int repoCommits, int authorTotal)
         {
-            if (repoCommits == 0)
+            if(repoCommits < 0 || userCommits < 0)
             {
-                return (COMMIT_PERCENTAGE_FACTOR / (decimal)authorTotal);
+                return 0;
             }
+            else
+            {
+                if (repoCommits == 0)
+                {
+                    return (COMMIT_PERCENTAGE_FACTOR / (decimal)authorTotal);
+                }
 
-            return ((decimal)userCommits / (decimal)repoCommits) * COMMIT_PERCENTAGE_FACTOR;
+                return ((decimal)userCommits / (decimal)repoCommits) * COMMIT_PERCENTAGE_FACTOR;
+            }
         }
 
         /// <summary>
@@ -75,13 +82,20 @@ namespace Honours_Project.Services
         /// <returns></returns>
         public decimal Calculate_Addition_Score(int userAdditions, int repoAdditions, int authorTotal)
         {
-            // If there are no additions in the repo, provide an equal distribution to all collaborators
-            if (repoAdditions == 0)
+            if(repoAdditions < 0 || userAdditions < 0)
             {
-                return (ADDITION_PERCENTAGE_FACTOR / (decimal)authorTotal);
+                return 0;
             }
+            else
+            {
+                // If there are no additions in the repo, provide an equal distribution to all collaborators
+                if (repoAdditions == 0)
+                {
+                    return (ADDITION_PERCENTAGE_FACTOR / (decimal)authorTotal);
+                }
 
-            return ((decimal)userAdditions / (decimal)repoAdditions) * ADDITION_PERCENTAGE_FACTOR;
+                return ((decimal)userAdditions / (decimal)repoAdditions) * ADDITION_PERCENTAGE_FACTOR;
+            }
         }
 
         /// <summary>
@@ -93,12 +107,19 @@ namespace Honours_Project.Services
         /// <returns></returns>
         public decimal Calculate_Deletion_Score(int userDeletions, int repoDeletions, int authorTotal)
         {
-            if (repoDeletions == 0)
+            if(repoDeletions < 0 || userDeletions < 0)
             {
-                return (DELETION_PERCENTAGE_FACTOR / (decimal)authorTotal);
+                return 0;
             }
+            else
+            {
+                if (repoDeletions == 0)
+                {
+                    return (DELETION_PERCENTAGE_FACTOR / (decimal)authorTotal);
+                }
 
-            return ((decimal)userDeletions / (decimal)repoDeletions) * DELETION_PERCENTAGE_FACTOR;
+                return ((decimal)userDeletions / (decimal)repoDeletions) * DELETION_PERCENTAGE_FACTOR;
+            }
         }
 
         //! END SECTION: Sub-level Calculations

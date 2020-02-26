@@ -5,19 +5,54 @@ let scores = [];
 let restrictedCommits = [];
 
 function Get_User_Repo_Request_Handler(result) {
-    if (result.status.status_Code == 200) {
-        if (result.repos.length > 0) {
-            $('#request-repository-select').empty();
+    switch (result.status.status_Code) {
+        case 200:
+            if (result.repos.length > 0) {
+                $('#request-repository-select').empty();
 
-            $.each(result.repos, function (key, val) {
-                $('#request-repository-select').append('<option value="' + val.name + '">' + val.name + '</option>');
-            })
+                $.each(result.repos, function (key, val) {
+                    $('#request-repository-select').append('<option value="' + val.name + '">' + val.name + '</option>');
+                })
+
+                $('#repos-loading-icon').fadeOut(300).promise().done(function () {
+                    $('#repos-fetched-icon').fadeIn(300);
+                    $('#repos-fetched-icon').addClass('visible');
+                })
+            }
+            else {
+                let basicEmptySwalOptions = {
+                    use: true,
+                    type: 'warning',
+                    title: 'No public repositories',
+                    text: 'The given username is valid, however, no public repositories were found'
+                };
+
+                $('#repos-loading-icon').fadeOut(300).promise().done(function () {
+                    $('#repos-fetched-icon').fadeOut();
+                    $('#repos-not-fetched-icon').fadeIn(300);
+                    $('#repos-fetched-icon').removeClass('visible');
+                })
+
+                Display_Sweet_Alert('warning', basicEmptySwalOptions, null);
+            }
+            break;
+
+        case 404:
+            let basicSwalOptions = {
+                use: true,
+                type: 'error',
+                title: 'Not a valid Github username',
+                text: 'The username entered is not a valid Github username'
+            };
 
             $('#repos-loading-icon').fadeOut(300).promise().done(function () {
-                $('#repos-fetched-icon').fadeIn(300);
-                $('#repos-fetched-icon').addClass('visible');
+                $('#repos-fetched-icon').fadeOut();
+                $('#repos-not-fetched-icon').fadeIn(300);
+                $('#repos-fetched-icon').removeClass('visible');
             })
-        }
+
+            Display_Sweet_Alert('error', basicSwalOptions, null);
+            break
     }
 }
 

@@ -14,6 +14,9 @@ namespace Honours_Project
     {
         Task<Repo_List_Result> Get_User_Repositories(string userName);
 
+        // TEMP:
+        Task<string> Get_User_Repositories_Simple(string userName);
+
         Task<Repo_Stat_Result> Get_Repository_Stats(Repo_Stat_Request requestData);
 
         Task<Repo_Commit_Result> Get_Repository_Commits(string userName, string repoName, int pageNumber);
@@ -43,6 +46,24 @@ namespace Honours_Project
             var returnObj = await _restService.Perform_REST_GET_Request(url, GitHub_Model_Types.Repo_List_Result);
 
             return (Repo_List_Result)returnObj;
+        }
+
+        public async Task<string> Get_User_Repositories_Simple(string userName)
+        {
+            var url = "https://api.github.com/users/" + userName + "/repos";
+
+            //var returnObj = await _restService.Perform_REST_GET_Request(url, GitHub_Model_Types.Repo_List_Result);
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", "request");
+
+                var response = await client.GetAsync(url);
+
+                string content = await response.Content.ReadAsStringAsync();
+
+                return content;
+            }
         }
 
         /*public async Task<Repo_Stat_Result> Get_Repository_Stats(string userName, string repoName, DateTime? start, DateTime? end)

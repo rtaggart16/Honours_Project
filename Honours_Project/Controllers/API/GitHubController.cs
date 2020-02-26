@@ -40,6 +40,9 @@ namespace Honours_Project.Controllers
         [Route("get/users/repositories/{userName}")]
         public async Task<Repo_List_Result> Get_User_Repositories(string userName)
         {
+            /*var obj = await _githubService.Get_User_Repositories_Simple(userName);
+
+            return obj;*/
             return await _githubService.Get_User_Repositories(userName);
         }
 
@@ -73,10 +76,10 @@ namespace Honours_Project.Controllers
 
         [HttpGet]
         [Route("get/graphql/commits")]
-        public async Task<List<Node>> Get_GraphQL_Commits()
+        public async Task<List<Repo_Commit>> Get_GraphQL_Commits()
         {
-            var user = "rtaggart16";
-            var repo = "tmpst";
+            var user = "notARealGithubUsername";
+            var repo = "Test-Repository";
             var branch = "master";
 
             bool allCommitsFetched = false;
@@ -126,7 +129,41 @@ namespace Honours_Project.Controllers
 
             } while (allCommitsFetched == false);
 
-            return nodes;
+            List<Repo_Commit> allCommits = new List<Repo_Commit>();
+
+            foreach (var node in nodes)
+            {
+                allCommits.Add(new Repo_Commit()
+                {
+                    Sha = node.Oid,
+                    Author = new Author_Info()
+                    {
+                        Login = node.Author.User.Login,
+                        Avatar_Url = node.Author.User.AvatarUrl,
+                        Id = node.Author.User.Id
+                    },
+                    Commit = new Commit()
+                    {
+                        Message = node.Message,
+                        Committer = new Commiter()
+                        {
+                            Date = node.Author.Date,
+                            Email = node.Author.Email,
+                            Message = node.Message,
+                            Name = node.Author.Name
+                        }
+                    },
+                    Stats = new Commit_Stats()
+                    {
+                        Additions = node.Additions,
+                        Deletions = node.Deletions,
+                        Total = (node.Additions + node.Deletions),
+                        Changed_Files = node.ChangedFiles
+                    }
+                });
+            }
+
+            return allCommits;
         }
     }
 }

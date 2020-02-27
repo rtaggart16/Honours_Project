@@ -500,11 +500,13 @@ function Load_Collaborator_Overview(author) {
 
     $.each(collaborator.commits.reverse(), function (key, val) {
         timelineData.push({
-            name: moment(val.commit.committer.date).format('DD/MM/YY hh:mm'),
+            name: val.commit.committer.date,
             label: val.commit.message,
             description: '<b>Author: </b>' + val.author.login + '<br/>' + '<b>Message: </b>' + val.commit.message
         });
     });
+
+    console.log('Timeline data: ',timelineData);
 
     Highcharts.chart('collaborator-commit-timeline-chart', {
         chart: {
@@ -528,7 +530,8 @@ function Load_Collaborator_Overview(author) {
             }
         },
         series: [{
-            data: timelineData
+            data: timelineData,
+            visible: true
         }]
     });
 

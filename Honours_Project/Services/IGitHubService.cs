@@ -518,6 +518,15 @@ namespace Honours_Project
 
                 if (allCommits.Count() > 0)
                 {
+                    if(requestData.Addition_Threshold < 0)
+                    {
+                        requestData.Addition_Threshold = (requestData.Addition_Threshold * -1);
+                    }
+                    if (requestData.Deletion_Threshold < 0)
+                    {
+                        requestData.Deletion_Threshold = (requestData.Deletion_Threshold * -1);
+                    }
+
                     allCommits = allCommits.OrderBy(x => x.Commit.Committer.Date).ToList();
 
                     // Check first 5 commits for initial bias

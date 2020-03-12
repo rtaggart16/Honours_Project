@@ -76,15 +76,17 @@ function Get_Repo_Bias_Request_Handler(result) {
         let repositoryName = $('#request-repository-select').val();
         let addThreshold = $('#request-add-threshold-input').val();
         let delThreshold = $('#request-del-threshold-input').val();
+        let commitThreshold = $('#request-commit-threshold-input').val();
 
         let filteredRequestObj = {
             User_Name: username,
             Repo_Name: repositoryName,
             Addition_Threshold: addThreshold,
             Deletion_Threshold: delThreshold,
+            Commit_Threshold: commitThreshold,
             Start: requestDateRange.start,
             End: requestDateRange.end,
-            Restricted_Commits: []
+            Restricted_Commits: restrictedCommits
         };
 
         Submit_AJAX_POST_Request(requestEndpointContainer.getRepoStats, filteredRequestObj, Get_Repo_Stats_Handler);

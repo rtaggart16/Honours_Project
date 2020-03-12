@@ -24,7 +24,7 @@
             case Validation_Types.Greater_Than_Zero:
                 console.log('Validating: ', val);
                 if (val.value <= 0) {
-                    validResult.errors.push(val.name + ' can\'t be less than 0');
+                    validResult.errors.push(val.name + ' can\'t be less than or equal to 0');
                     validResult.success = false;
                     validResult.errorType = 'user';
                 }

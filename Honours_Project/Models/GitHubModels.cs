@@ -1,7 +1,10 @@
-﻿using System;
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Honours_Project.Models
 {
@@ -12,6 +15,8 @@ namespace Honours_Project.Models
      *      - Repo_List_Result
      *      - Repo_Stat_Result
      *      - Repo_Commit_Result
+     *      - Repo_Bias_Result
+     *      - Repo_Stat_Request
      * - Sub-level models
      *      - Simple_Repo_Info
      *      - Repo_Stat_Info
@@ -75,33 +80,75 @@ namespace Honours_Project.Models
         public Status Status { get; set; }
     }
 
+    /// <summary>
+    /// Class that contains the result of a bias check
+    /// </summary>
     public class Repo_Bias_Result
     {
+        /// <summary>
+        /// List of GitHub related commits that could cause bias
+        /// </summary>
         public List<Repo_Commit> GitHub_Commits { get; set; }
 
+        /// <summary>
+        /// List of commits that exceed the user's addition threshold that could cause bias
+        /// </summary>
         public List<Repo_Commit> Mass_Addition_Commits { get; set; }
 
+        /// <summary>
+        /// List of commits that exceed the user's deletion threshold that could cause bias
+        /// </summary>
         public List<Repo_Commit> Mass_Deletion_Commits { get; set; }
 
+        /// <summary>
+        /// Boolean flag to track if a repository has any commits
+        /// </summary>
         public bool Has_Commits { get; set; }
     }
 
+    /// <summary>
+    /// Class that contains the options for fetching statistics for a repository
+    /// </summary>
     public class Repo_Stat_Request
     {
+        /// <summary>
+        /// The name of the owner of the target repository
+        /// </summary>
         public string User_Name { get; set; }
 
+        /// <summary>
+        /// The name of the target repository
+        /// </summary>
         public string Repo_Name { get; set; }
 
+        /// <summary>
+        /// The threshold for addition bias
+        /// </summary>
         public int Addition_Threshold { get; set; }
 
+        /// <summary>
+        /// The threshold for deletion bias
+        /// </summary>
         public int Deletion_Threshold { get; set; }
 
+        /// <summary>
+        /// The threshold for blow-commit threshold
+        /// </summary>
         public int Commit_Threshold { get; set; }
 
+        /// <summary>
+        /// The date to start analysis
+        /// </summary>
         public DateTime Start { get; set; }
 
+        /// <summary>
+        /// The date to end analysis
+        /// </summary>
         public DateTime End { get; set; }
 
+        /// <summary>
+        /// List of SHAs of the restricted commits
+        /// </summary>
         public List<string> Restricted_Commits { get; set; }
     }
 
@@ -137,38 +184,38 @@ namespace Honours_Project.Models
     }
 
     /// <summary>
-    /// Class that contains week-by-week stats about a repository and its collaborators
+    /// Class that contains the stats of a collaborator to a repository
     /// </summary>
-    /*public class Repo_Stat_Info
-    {
-        /// <summary>
-        /// The total number of commits that a collaborator has made to a repo
-        /// </summary>
-        public int Total { get; set; }
-
-        /// <summary>
-        /// List of week-by-week stats for a collaborator
-        /// </summary>
-        public List<Week> Weeks { get; set; }
-
-        /// <summary>
-        /// Detailed information about the collaborator
-        /// </summary>
-        public Author_Info Author { get; set; }
-    }*/
-
     public class Repo_Stat_Info
     {
+        /// <summary>
+        /// The total number of commits a user has performed
+        /// </summary>
         public int Total { get; set; }
 
+        /// <summary>
+        /// The total number of additions a user has performed
+        /// </summary>
         public int Additions { get; set; }
 
+        /// <summary>
+        /// The total number of deletions a user has performed
+        /// </summary>
         public int Deletions { get; set; }
 
+        /// <summary>
+        /// Boolean flag to track if a user is below the commit threshold specified
+        /// </summary>
         public bool Below_Threshold { get; set; }
 
+        /// <summary>
+        /// List of all the commits a user has performed
+        /// </summary>
         public List<Repo_Commit> Commits { get; set; }
 
+        /// <summary>
+        /// Object that contains details about a collaborator
+        /// </summary>
         public Author_Info Author { get; set; }
     }
 

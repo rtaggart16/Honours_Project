@@ -1,43 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
 using Microsoft.AspNetCore.Mvc;
-using Honours_Project.Models;
 
 namespace Honours_Project.Controllers
 {
+    /// <summary>
+    /// Default Controller of the Application
+    /// </summary>
     public class HomeController : Controller
     {
+        //! Section: Methods
+
+        /// <summary>
+        /// Method to display landing view of the application
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        //! END Section: Methods
     }
 }

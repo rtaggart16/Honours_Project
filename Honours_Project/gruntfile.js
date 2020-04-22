@@ -1,4 +1,9 @@
-﻿/// <binding BeforeBuild='default' />
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
+/// <binding BeforeBuild='default' />
 module.exports = function (grunt) {
     'use strict';
 

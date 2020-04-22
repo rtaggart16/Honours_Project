@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +15,8 @@ namespace Honours_Project.Models
     /*
      * - General
      *      - Status
+     * - Enums
+     *      - GitHub_Model_Types
     */
 
     //! END Section: Contents
@@ -34,6 +41,11 @@ namespace Honours_Project.Models
 
     //! END Section: General
 
+    //! Section: Enums
+
+    /// <summary>
+    /// Enum that tracks the various models of the application
+    /// </summary>
     public enum GitHub_Model_Types
     {
         Repo_List_Result = 0,
@@ -41,4 +53,6 @@ namespace Honours_Project.Models
         Repo_Commit_Result = 2,
         GraphQL_Repository_Result = 3
     }
+
+    //! END Section: Enums
 }

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace Honours_Project.Controllers
@@ -11,9 +12,17 @@ namespace Honours_Project.Controllers
     /// </summary>
     public class RequestController : Controller
     {
+        //! Section: Methods
+
+        /// <summary>
+        /// Method to display the Request page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();
         }
+
+        //! END Section: Methods
     }
 }

@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

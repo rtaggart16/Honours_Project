@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
+
 using Microsoft.AspNetCore.Mvc;
-using Honours_Project.Models;
 
 namespace Honours_Project.Controllers
 {
@@ -13,6 +12,8 @@ namespace Honours_Project.Controllers
     /// </summary>
     public class HomeController : Controller
     {
+        //! Section: Methods
+
         /// <summary>
         /// Method to display landing view of the application
         /// </summary>
@@ -21,5 +22,7 @@ namespace Honours_Project.Controllers
         {
             return View();
         }
+
+        //! END Section: Methods
     }
 }

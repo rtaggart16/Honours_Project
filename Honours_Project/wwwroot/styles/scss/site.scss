@@ -1,5 +1,28 @@
-﻿/* VARIABLES */
+﻿/*
+    Name: Ross Taggart
+    ID: S1828840
+*/
 
+//! Section: Contents
+
+    /*
+     * - Variables
+     *      - primary
+     *      - secondary
+     *      - warn
+     *      - background
+     *      - background-accent
+     *      - orange-accent
+     * - Tag Styles
+     *      - body
+     *      - nav
+     *      - h2
+     *      - img
+    */
+
+//! END Section: Contents
+
+//! Section: Variables
 
 /* Main Colours */
 
@@ -22,10 +45,11 @@ $orange-accent: rgb(255,213,79);
 
 /* END: Accent Colours */
 
-/* END: Variables */
+//! END Section: Variables
 
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
-for details on configuring this project to bundle and minify static web assets. */
+//! Section: Tag Styles
+
+// body - Styles to apply to the main body tag
 body {
     padding-top: 0px;
     padding-bottom: 20px;
@@ -34,34 +58,48 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
+// nav - Styles to apply to nav tags
+nav {
+    background-color: $primary !important;
+}
+
+// h2 - Styles to apply to h2 tags
+h2 {
+    font-family: 'Roboto', sans-serif;
+}
+
+// img - Styles to apply to img tags
+img {
+    max-width: 100% !important;
+}
+
+//! END Section: Tag Styles
+
+//! Section: Class Styles
+
+// body-content - Style that applies padding to the entire application
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
 
-.basic-bottom-spacing {
+// base-padding-bottom - Style that applies padding to the bottom of the application
+.base-padding-bottom {
     padding-bottom: 10px;
 }
 
-/* Carousel */
+// carousel-caption p - Style that applies to p tags of the carousel-caption class
 .carousel-caption p {
     font-size: 20px;
     line-height: 1.4;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
+// carousel-inner item img - Style that applies width to the carousel-inner
 .carousel-inner .item img[src$=".svg"] {
     width: 100%;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px;
-}
-
-/* Hide/rearrange for smaller screens */
+// Hide/rearrange for smaller screens
 @media screen and (max-width: 767px) {
     /* Hide captions */
     .carousel-caption {
@@ -69,21 +107,13 @@ body {
     }
 }
 
-nav {
-    background-color: $primary !important;
-}
-
-h2 {
-    font-family: 'Roboto', sans-serif;
-}
-
+// hover-container - Styles for the card display used throughout the request system
 .hover-container {
     background: $background-accent !important;
     color: rgb(255,255,255) !important;
     border-radius: 2px;
     display: inline-block;
     position: relative;
-    /*min-height: 120px;*/
     width: 100%;
     margin-bottom: 20px;
     padding: 10px;
@@ -92,47 +122,50 @@ h2 {
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
-.base-padding-bottom {
-    padding-bottom: 10px;
-}
-
+// secondary-btn - Styles that apply to the secondary button of the application
 .secondary-btn {
     background-color: $secondary;
     color: rgb(255,255,255);
 }
 
+// primary-btn - Styles that apply to the primary button of the application
 .primary-btn {
     background-color: $primary;
     color: rgb(255,255,255);
 }
 
+// warn-btn - Styles that apply to the warning button of the application
 .warn-btn {
     background-color: $warn;
     color: rgb(255,255,255);
 }
 
+// o-accent - Styles that apply to the orange accent colour
 .o-accent {
     color: $orange-accent !important;
 }
 
+// warn-text - Styles that apply red to the text
 .warn-text {
     color: $warn;
 }
 
+// secondary-text - Styles that apply green to the text
 .secondary-text {
     color: $secondary;
 }
 
+// primary-text - Styles that apply purple to the text
 .primary-text {
     color: $primary;
 }
 
-// Overwrites
-
+// modal - Change the text colour used in a modal to black
 .modal {
     color: black !important;
 }
 
+// tooltip-inner - Overwrite the tootltips to use a dark theme 
 .tooltip-inner {
     background-color: rgb(255,255,255);
     color: $background-accent !important;
@@ -154,26 +187,29 @@ h2 {
     border-right-color: rgb(255,255,255) !important;
 }
 
+// daterangepciker - Change the text colour used in the daterangepicker to black
 .daterangepicker {
     color: black !important;
 }
 
+// small-height - Class that defines a pre-defined height for certain elements
 .small-height {
     height: 200px;
 }
 
+// medium-height - Class that defines a pre-defined height for certain elements
 .medium-height {
     height: 350px;
 }
 
+// warn-border - Class that defines a red border
 .warn-border {
     border: 1px solid $warn;
 }
 
-img {
-    max-width: 100% !important;
-}
-
+// clickable - Class that signifies to a user that an item is clickable
 .clickable {
     cursor: pointer !important;
 }
+
+//! Section: Class Styles
